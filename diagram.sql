@@ -15,7 +15,7 @@ CREATE TABLE Persona (
     nombres VARCHAR(100),
     apellido_paterno VARCHAR(50),
     apellido_materno VARCHAR(50),
-    nombre_completo AS (nombres | ' ' | apellido_paterno | ' ' | apellido_materno),
+    nombre_completo AS (nombres || ' ' || apellido_paterno || ' ' || apellido_materno),
     email_institucional VARCHAR(30) CHECK (email_institucional LIKE '%@lamejor.cl'),
     estamento estamento_enum,
     PRIMARY KEY (run, dv),

@@ -1,8 +1,7 @@
 <?php
 
 $path_tablas = array(
-    'spotify' => '../data/Spotify-Songs.csv',
-    'usuarios' => '../data/usuarios.csv',
+    'estudiantes' => '../data/Estudiantes.csv',
 );
 
 $tablas_iniciales = array(
