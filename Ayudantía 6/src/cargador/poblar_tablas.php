@@ -16,7 +16,13 @@
                         if ($data[$i] == ''){ 
                             $data[$i] = Null; // Convertir campos vacíos en NULL, para evitar insertar datos vacíos
                         }
+
+                        
                     }
+
+
+
+
                     // Realizar toda corrección necesaria antes de insertar
                     insertar_en_tabla($db, $tabla, $data);
                 }

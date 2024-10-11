@@ -1,6 +1,5 @@
 <?php
 
-
 function limpiarCSV($ruta, $salida) {
     $valores_no_nulos = [
         'Cohorte' => 'X',
