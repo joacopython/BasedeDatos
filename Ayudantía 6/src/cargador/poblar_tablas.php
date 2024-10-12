@@ -4,7 +4,7 @@ require('parametros_tablas.php');
 require('utils.php');
 try {
     echo "INICIO DE INSERCIÓN DE DATOS\n";
-    foreach ($path_tablas as $tabla => $path) {
+    foreach ($path_tablas as $tabla_nombre => $path) {
         $file = fopen($path, 'r');
         if ($file) {
             $header = fgetcsv($file); // Saltar la primera línea
@@ -15,9 +15,13 @@ try {
                         $data[$i] = Null; // Convertir campos vacíos en NULL, para evitar insertar datos vacíos
                     }
                 }
-                $data = array_combine($header, $linea);
+                $data = array_combine($header, $data);
+                //tabla esel n
+                $tabla = tabla_handler($tabla_nombre, $data);
                 // Realizar toda corrección necesaria antes de insertar
-                insertar_en_tabla($db, $tabla, $data);
+                foreach (){
+                    insertar_en_tabla($db, $tabla, $data);
+                }
             }
             fclose($file);
         } else {
