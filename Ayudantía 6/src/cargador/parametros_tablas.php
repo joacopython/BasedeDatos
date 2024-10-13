@@ -94,23 +94,22 @@ $tablas_iniciales = array(
         grado VARCHAR(50),
         sede VARCHAR(30),
         nombre_facultad VARCHAR(20),
-        codigo_carrera VARCHAR(10),
+        nombre_carrera VARCHAR(10),
         jornada jornada_enum,
         modalidad modalidad_enum,
         PRIMARY KEY (codigo_plan),
         FOREIGN KEY (nombre_facultad) REFERENCES Facultad(nombre_facultad),
-        FOREIGN KEY (codigo_carrera) REFERENCES Carrera(codigo_carrera)',
+        FOREIGN KEY (nombre_carrera) REFERENCES Carrera(nombre)',
 
     'Curso' =>
-        'codigo_plan VARCHAR(10),
-        sigla_curso VARCHAR(10),
+        'sigla_curso VARCHAR(10),
         nombre_curso VARCHAR(100),
         ciclo VARCHAR(30),
         nivel INT,
         secciones INT,
+        prerequisito CHAR(1)
         caracter caracter_enum,
-        PRIMARY KEY (sigla_curso),
-        FOREIGN KEY (codigo_plan) REFERENCES Plan_de_Estudio(codigo_plan)',
+        PRIMARY KEY (sigla_curso)',
 
     'HistorialAcadémico' =>
         'numero_estudiante INT,
@@ -160,12 +159,11 @@ $tablas_iniciales = array(
         PRIMARY KEY (sala)',
     
     'Incluye_Curso' =>
-        'nombre_plan VARCHAR(30),
-        codigo_plan VARCHAR(30),
+        'codigo_plan VARCHAR(30),
         nombre_carrera VARCHAR(30),
         sigla_curso VARCHAR(30),
-        PRIMARY KEY (nombre_plan, codigo_plan, nombre_carrera, sigla_curso),
-        FOREIGN KEY (nombre_plan, codigo_plan, nombre_carrera) REFERENCES PlanEstudio(nombre, codigo,nombre_carrera) ON DELETE CASCADE,
+        PRIMARY KEY (nombre_plan, codigo_plan, sigla_curso),
+        FOREIGN KEY (nombre_plan, codigo_plan) REFERENCES PlanEstudio(nombre, codigo) ON DELETE CASCADE,
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso)
         ON DELETE CASCADE',
 
@@ -203,12 +201,6 @@ $tablas_iniciales = array(
         FOREIGN KEY (sigla_curso_1) REFERENCES Curso(sigla_curso),
         FOREIGN KEY (sigla_curso_2) REFERENCES Curso(sigla_curso)',
 
-    'CursoPrerequisito' => 
-        'sigla_prerequisito VARCHAR(10),
-        sigla_curso VARCHAR(10),
-        PRIMARY KEY (sigla_curso, sigla_prerequisito),
-        FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso),
-        FOREIGN KEY (sigla_prerequisito) REFERENCES Curso(sigla_curso)',
 );
 
 ?>

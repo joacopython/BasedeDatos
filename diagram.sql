@@ -51,6 +51,7 @@ CREATE TABLE Estudiante (
     UNIQUE (numero_estudiante)
 );
 
+
 CREATE TABLE UltimoLogro(
     numero_estudiante INT,
     ultimo_logro VARCHAR(30),
@@ -109,24 +110,23 @@ CREATE TABLE PlanEstudio (
   grado VARCHAR(50),
   sede VARCHAR(30),
   nombre_facultad VARCHAR(20),
-  codigo_carrera VARCHAR(10),
+  nombre_carrera VARCHAR(10),
   jornada jornada_enum,
   modalidad modalidad_enum,
   PRIMARY KEY (codigo_plan),
   FOREIGN KEY (nombre_facultad) REFERENCES Facultad(nombre_facultad),
-  FOREIGN KEY (codigo_carrera) REFERENCES Carrera(codigo_carrera)
+  FOREIGN KEY (nombre_carrera) REFERENCES Carrera(nombre)
 );
 
 CREATE TABLE Curso (
-  codigo_plan VARCHAR(10),
   sigla_curso VARCHAR(10),
   nombre_curso VARCHAR(100),
   ciclo VARCHAR(30),
   nivel INT,
   secciones INT,
+  prerequisito CHAR(1),
   caracter caracter_enum,
   PRIMARY KEY (sigla_curso),
-  FOREIGN KEY (codigo_plan) REFERENCES Plan_de_Estudio(codigo_plan)
 );
 
 
@@ -145,13 +145,13 @@ CREATE TABLE HistorialAcadémico (
 
 
 CREATE TABLE Facultad (
-    nombre VARCHAR(20),
+    nombre VARCHAR(50),
     codigo_departamento INT,
     PRIMARY KEY (nombre)
 );
 
 CREATE TABLE Carrera (
-    nombre VARCHAR(20),
+    nombre VARCHAR(50),
     PRIMARY KEY (nombre)
 );
 
@@ -162,13 +162,13 @@ CREATE TABLE Departamento (
 );
 
 
-CREATE TABLE Oferta_Académica (
+CREATE TABLE OfertaAcademica (
   codigo_plan VARCHAR(30),
   sigla_curso VARCHAR(30),
   seccion INT,
   fecha_inicio DATE,
   fecha_fin DATE,
-  duracion CHAR(10),
+  duracion VACHAR(10),
   inscritos INT,
   hora_inicio VARCHAR(15),
   dia VARCHAR(15),
@@ -185,18 +185,16 @@ CREATE TABLE Salas(
   PRIMARY KEY (sala)
 );
 
-CREATE TABLE Incluye_Curso(
-    nombre_plan VARCHAR(30),
+CREATE TABLE IncluyeCurso(
     codigo_plan VARCHAR(30),
-    nombre_carrera VARCHAR(30),
     sigla_curso VARCHAR(30),
-    PRIMARY KEY (nombre_plan, codigo_plan, nombre_carrera, sigla_curso),
-    FOREIGN KEY (nombre_plan, codigo_plan, nombre_carrera) REFERENCES PlanEstudio(nombre, codigo,nombre_carrera) ON DELETE CASCADE,
+    PRIMARY KEY (codigo_plan, sigla_curso),
+    FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan) ON DELETE CASCADE,
     FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso)
     ON DELETE CASCADE
 );
 
-CREATE TABLE Inscripcion_Carrera (
+CREATE TABLE InscripcionCarrera (
     numero_estudiante INT,
     nombre_carrera VARCHAR(30),
     PRIMARY KEY (numero_estudiante, nombre_carrera),
@@ -204,7 +202,7 @@ CREATE TABLE Inscripcion_Carrera (
     FOREIGN KEY (nombre_carrera) REFERENCES Carrera(nombre_carrera) ON DELETE CASCADE
 );
 
-CREATE TABLE Oferta_Academica (
+CREATE TABLE OfertaAcademica (
     sigla_curso VARCHAR(30),
     run_profesor INT,
     seccion_curso VARCHAR(30),
@@ -232,11 +230,3 @@ CREATE TABLE CursoEquivalente (
   FOREIGN KEY (sigla_curso_1) REFERENCES Curso(sigla_curso),
   FOREIGN KEY (sigla_curso_2) REFERENCES Curso(sigla_curso)
 );
-
-CREATE TABLE CursoPrerequisito 
-  sigla_prerequisito VARCHAR(10),
-  sigla_curso VARCHAR(10),
-  PRIMARY KEY (sigla_curso, sigla_prerequisito),
-  FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso),
-  FOREIGN KEY (sigla_prerequisito) REFERENCES Curso(sigla_curso)
-;
