@@ -223,39 +223,40 @@ function limpiar_planes($data){
 
     foreach ($data as $key => &$valor) {
         if ($key == 'Código Plan') {
-            if (!is_string($key)) {
+            if (!is_string($key) || empty($key)) {
                 $datos_malos['PlanEstudio']['codigo_plan'] = $valor;
                 $valor = NULL;
             }
             $tablas['PlanEstudio']['codigo_plan'] = $valor;
         }
         elseif ($key == "Facultad"){
-            if (is_string($key)) {
-                $tablas['Facultad']['nombre'] = $valor;
-            }
-            else{
+            if (!is_string($key) || empty($key)) {
                 $datos_malos['Facultad']['nombre'] = $valor;
+                $valor = NULL;
             }
+            $tablas['Facultad']['nombre'] = $valor;
         }
         elseif ($key == "Carrera"){
-            if (is_string($key)) {
-                $tablas['Carrera']['nombre'] = $valor;
-            }
-            else{
+            if (!is_string($key) || empty($key)) {
                 $datos_malos['Carrera']['nombre'] = $valor;
+                $valor = NULL;
             }
+            $tablas['Carrera']['nombre'] = $valor;
         }
         elseif ($key == "Plan"){
-            if (is_string($key)) {
-                $tablas['PlanEstudio']['nombre'] = $valor;
-            }
-            else{
+            if (!is_string($key) || empty($key)) {
                 $datos_malos['PlanEstudio']['nombre'] = $valor;
+                $valor = NULL;
             }
+            $tablas['PlanEstudio']['nombre'] = $valor;
         }
-        elseif ($key == ""){
-            
-        }
+        elseif ($key == "Jornada"){
+            if (!is_string($key) || empty($key)) {
+                $datos_malos['PlanEstudio']['jornada'] = $valor; // no aparece como atributo pero deberia
+                $valor = NULL;
+            }
+            $tablas['PlanEstudio']['codigo_plan'] = $valor;
+        }            
         elseif ($key == ""){
             
         }
