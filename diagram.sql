@@ -40,9 +40,9 @@ CREATE TABLE Telefono (
 CREATE TABLE Estudiante (
     run INT,
     dv CHAR(1),
-    nombres VARCHAR(100), #
-    apellido_paterno VARCHAR(50), #
-    apellido_materno VARCHAR(50), #
+    nombres VARCHAR(100), -- 
+    apellido_paterno VARCHAR(50), --
+    apellido_materno VARCHAR(50), --
     cohorte VARCHAR(30),
     numero_estudiante INT,
     fecha_logro DATE,
@@ -82,7 +82,7 @@ CREATE TABLE Profesor (
 );
 
 CREATE TABLE Jornada (
-    run INT,
+    run INT,  -- como enlazo esto con una oferta academica?
     jornada_diurna BOOLEAN,
     jornada_vespertina BOOLEAN,
     PRIMARY KEY (run),
@@ -112,7 +112,7 @@ CREATE TABLE ExAlumno (
 CREATE TABLE PlanEstudio (
     codigo_plan VARCHAR(10),
     nombre_plan VARCHAR(100),
-    duracion INT,
+    duracion CHAR(1),
     inicio DATE,
     grado VARCHAR(50),
     sede VARCHAR(30),
@@ -141,7 +141,7 @@ CREATE TABLE HistorialAcadémico (
     numero_estudiante INT,
     sigla_curso VARCHAR(30),
     periodo VARCHAR(30), --ojo no estoy seguro si es atributo foráneo o propio
-    seccion INT,
+    seccion INT, -- pero kexuxa ARREGLAR ESTO
     nota DECIMAL(3, 2),
     calificacion calificacion_enum, 
     convocatoria convocatoria_enum, 
@@ -159,7 +159,7 @@ CREATE TABLE OfertaAcademica (
     duracion CHAR(1),
     fecha_fin VARCHAR(30),
     fecha_inicio VARCHAR(30),
-    codigo_plan VACHAR(30),
+    codigo_plan VARCHAR(30),
     hora_inicio VARCHAR(30),
     dia VARCHAR(30),
     horario_fin VARCHAR(30),
@@ -188,7 +188,6 @@ CREATE TABLE Departamento (
     nombre VARCHAR(30),
     PRIMARY KEY (codigo_departamento)
 );
-
 
 CREATE TABLE Salas(
     sala VARCHAR(30),

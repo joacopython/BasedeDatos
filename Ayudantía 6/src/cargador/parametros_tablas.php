@@ -101,7 +101,7 @@ $tablas_iniciales = array(
     'PlanEstudio' =>
         'codigo_plan VARCHAR(10),
         nombre_plan VARCHAR(100),
-        duracion INT,
+        duracion CHAR(1),
         inicio DATE,
         grado VARCHAR(50),
         sede VARCHAR(30),
