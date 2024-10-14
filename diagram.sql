@@ -1,7 +1,6 @@
 CREATE TYPE estamento_enum AS ENUM ('Estudiante', 'Académico', 'Administrativo');
 CREATE TYPE grado_academico_enum AS ENUM ('Licenciatura', 'Magíster', 'Doctor');
 CREATE TYPE jerarquia_academica_enum AS ENUM ('Asistente', 'Asociado', 'Instructor', 'Titular', 'Sin Jerarquizar', 'Comisión Superior');
-CREATE TYPE jornada_enum AS ENUM ('Diurna', 'Vespertina', 'Ambas');
 CREATE TYPE contrato_enum AS ENUM ('Full Time', 'Part Time', 'Honorario');
 CREATE TYPE modalidad_enum AS ENUM('Presencial', 'Online', 'Híbrida');
 CREATE TYPE caracter_enum AS ENUM('Mínimo', 'Taller', 'Electivo', 'CTI', 'CSI');
@@ -18,11 +17,11 @@ CREATE TABLE Persona (
     nombre_completo AS (nombres || ' ' || apellido_paterno || ' ' || apellido_materno),
     email_institucional VARCHAR(30) CHECK (email_institucional LIKE '%@lamejor.cl'),
     estamento estamento_enum,
-    PRIMARY KEY (run, dv),
+    PRIMARY KEY (run),
     UNIQUE (email_institucional),
 );
 
-CREATE TABLE Email_personal (
+CREATE TABLE EmailPersonal (
     run INT,
     dv CHAR(1),
     email_personal VARCHAR(30),
@@ -69,30 +68,37 @@ CREATE TABLE Bloqueo(
 );
 
 CREATE TABLE Profesor (
-    run INT(30),
-    dv CHAR(1),
+    run INT,
     contrato VARCHAR(30),
+    dedicacion INT,
     jornada jornada_enum,
     grado_academico grado_academico_enum,
     jerarquia_academica jerarquia_academica_enum,
     contrato contrato_enum,
-    PRIMARY KEY (run, dv),
-    FOREIGN KEY (run, dv) REFERENCES Persona(run, dv) ON DELETE CASCADE
+    PRIMARY KEY (run),
+    FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE
 );
 
+CREATE TABLE Jornada (
+    run INT,
+    jornada_diurna BOOLEAN,
+    jornada_vespertina BOOLEAN,
+    PRIMARY KEY (run),
+    FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE
+)
 
 CREATE TABLE Administrativo (
-    run INT(30),
-    dv CHAR(1),
+    run INT,
     cargo VARCHAR(30),
+    dedicacion INT,
     grado_academico VARCHAR(30),
     contrato contrato_enum,
-    PRIMARY KEY (run, dv),
-    FOREIGN KEY (run, dv) REFERENCES Persona(run, dv) ON DELETE CASCADE
+    PRIMARY KEY (run),
+    FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE
 );
 
 CREATE TABLE ExAlumno (
-    run INT(30),
+    run INT,
     dv CHAR(1),
     numero_estudiante VARCHAR(10),
     titulo VARCHAR(30),
@@ -213,12 +219,11 @@ CREATE TABLE OfertaAcademica (
     codigo_plan INT,
     hora_inicio VARCHAR(30),
     dia VARCHAR(30),
-    dv_profesor CHAR(1),
     horario_fin VARCHAR(30),
     sala VARCHAR(30),
     PRIMARY KEY (sigla_curso, seccion_curso, codigo_plan),
     FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso) ON DELETE CASCADE,
-    FOREIGN KEY (run_profesor, dv_profesor) REFERENCES Profesor(run, dv) ON DELETE CASCADE,
+    FOREIGN KEY (run_profesor) REFERENCES Profesor(run) ON DELETE CASCADE,
     FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan) ON DELETE CASCADE,
     FOREIGN KEY (sala) REFERENCES Salas(sala) ON DELETE CASCADE
 );
@@ -229,4 +234,12 @@ CREATE TABLE CursoEquivalente (
   PRIMARY KEY (sigla_curso_1, sigla_curso_2),
   FOREIGN KEY (sigla_curso_1) REFERENCES Curso(sigla_curso),
   FOREIGN KEY (sigla_curso_2) REFERENCES Curso(sigla_curso)
+);
+
+CREATE TABLE CursoPrerequisito (
+  sigla_curso VARCHAR(10),
+  prerequisito VARCHAR(10),
+  PRIMARY KEY (sigla_curso_1, prerequisito),
+  FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso),
+  FOREIGN KEY (prerequisito) REFERENCES Curso(sigla_curso)
 );

@@ -2,6 +2,12 @@
 
 $path_tablas = array(
     'estudiantes' => '../data/Estudiantes.csv',
+    'asignaturas' => '../data/Asignaturas.csv',
+    'docentes planificados' => '../data/docentes planificados.csv',
+    'notas' => '../data/Notas.csv',
+    'planeacion' => '../data/Planeacion.csv',
+    'planes' => '../data/Planes.csv',
+    'prerrequisitos' => '../data/prerrequisitos.csv',
 );
 
 $tablas_iniciales = array(
@@ -15,22 +21,20 @@ $tablas_iniciales = array(
         nombre_completo AS (nombres || \' \' || apellido_paterno || \' \' || apellido_materno),
         email_institucional VARCHAR(30) CHECK (email_institucional LIKE \'%@lamejor.cl\'),
         estamento estamento_enum,
-        PRIMARY KEY (run, dv),
+        PRIMARY KEY (run),
         UNIQUE (email_institucional)',
     
-    'Email_personal' =>
+    'EmailPersonal' =>
         'run INT,
-        dv CHAR(1),
         email_personal VARCHAR(30),
-        PRIMARY KEY(run, dv),
-        FOREIGN KEY (run, dv) REFERENCES Persona(run, dv)',
+        PRIMARY KEY(run),
+        FOREIGN KEY (run) REFERENCES Persona(run)',
 
     'Telefono' =>
         'run INT,
-        dv CHAR(1),
         telefono VARCHAR(30),
-        PRIMARY KEY(run, dv),
-        FOREIGN KEY (run, dv) REFERENCES Persona(run, dv',    
+        PRIMARY KEY(run),
+        FOREIGN KEY (run) REFERENCES Persona(run)',    
     
     'Estudiante' =>
         'run INT,
@@ -58,27 +62,32 @@ $tablas_iniciales = array(
         FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante)',
 
     'Profesor' =>
-        'run INT(30),
-        dv CHAR(1),
+        'run INT,
         contrato VARCHAR(30),
         jornada jornada_enum,
         grado_academico grado_academico_enum,
         jerarquia_academica jerarquia_academica_enum,
         contrato contrato_enum,
-        PRIMARY KEY (run, dv),
-        FOREIGN KEY (run, dv) REFERENCES Persona(run, dv) ON DELETE CASCADE',
+        PRIMARY KEY (run),
+        FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE',
+
+    'Jornada' =>
+        'run INT,
+        jornada_diurna BOOLEAN,
+        jornada_vespertina BOOLEAN,
+        PRIMARY KEY (run),
+        FOREING KEY (run) REFENCES Persona(run) ON DELETE CASCADE',
 
     'Administrativo' =>
-        'run INT(30),
-        dv CHAR(1),
+        'run INT,
         cargo VARCHAR(30),
         grado_academico VARCHAR(30),
         contrato contrato_enum,
-        PRIMARY KEY (run, dv),
-        FOREIGN KEY (run, dv) REFERENCES Persona(run, dv) ON DELETE CASCADE',
+        PRIMARY KEY (run),
+        FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE',
 
     'ExAlumno' =>
-        'run INT(30),
+        'run INT,
         dv CHAR(1),
         numero_estudiante VARCHAR(10),
         titulo VARCHAR(30),
@@ -137,7 +146,7 @@ $tablas_iniciales = array(
         nombre VARCHAR(30),
         PRIMARY KEY (codigo)',
 
-    'Oferta_Académica' =>
+    'OfertaAcadémica' =>
         'codigo_plan VARCHAR(30),
         sigla_curso VARCHAR(30),
         seccion INT,
@@ -158,7 +167,7 @@ $tablas_iniciales = array(
         edificio VARCHAR(30),
         PRIMARY KEY (sala)',
     
-    'Incluye_Curso' =>
+    'IncluyeCurso' =>
         'codigo_plan VARCHAR(30),
         nombre_carrera VARCHAR(30),
         sigla_curso VARCHAR(30),
@@ -167,14 +176,14 @@ $tablas_iniciales = array(
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso)
         ON DELETE CASCADE',
 
-    'Inscripcion_Carrera' =>
+    'InscripcionCarrera' =>
         'numero_estudiante INT,
         nombre_carrera VARCHAR(30),
         PRIMARY KEY (numero_estudiante, nombre_carrera),
         FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante) ON DELETE CASCADE,
         FOREIGN KEY (nombre_carrera) REFERENCES Carrera(nombre_carrera) ON DELETE CASCADE',
 
-    'Oferta_Academica' =>
+    'OfertaAcademica' =>
         'sigla_curso VARCHAR(30),
         run_profesor INT,
         seccion_curso VARCHAR(30),
@@ -185,12 +194,11 @@ $tablas_iniciales = array(
         codigo_plan INT,
         hora_inicio VARCHAR(30),
         dia VARCHAR(30),
-        dv_profesor CHAR(1),
         horario_fin VARCHAR(30),
         sala VARCHAR(30),
         PRIMARY KEY (sigla_curso, seccion_curso, codigo_plan),
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso) ON DELETE CASCADE,
-        FOREIGN KEY (run_profesor, dv_profesor) REFERENCES Profesor(run, dv) ON DELETE CASCADE,
+        FOREIGN KEY (run_profesor) REFERENCES Profesor(run) ON DELETE CASCADE,
         FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan) ON DELETE CASCADE,
         FOREIGN KEY (sala) REFERENCES Salas(sala) ON DELETE CASCADE',
 
@@ -201,6 +209,13 @@ $tablas_iniciales = array(
         FOREIGN KEY (sigla_curso_1) REFERENCES Curso(sigla_curso),
         FOREIGN KEY (sigla_curso_2) REFERENCES Curso(sigla_curso)',
 
+    
+    'CursoPrerequisito' =>
+        'sigla_curso VARCHAR(10),
+        prerequisito VARCHAR(10),
+        PRIMARY KEY (sigla_curso_1, prerequisito),
+        FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso),
+        FOREIGN KEY (prerequisito) REFERENCES Curso(sigla_curso)',
 );
 
 ?>
