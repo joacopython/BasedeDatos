@@ -39,12 +39,15 @@ $tablas_iniciales = array(
     'Estudiante' =>
         'run INT,
         dv CHAR(1),
+        nombres VARCHAR(100), #
+        apellido_paterno VARCHAR(50), #
+        apellido_materno VARCHAR(50), #
         cohorte VARCHAR(30),
         numero_estudiante INT,
         fecha_logro DATE,
         ultima_carga DATE,
         PRIMARY KEY (numero_estudiante),
-        FOREIGN KEY (run, dv) REFERENCES Persona(run, dv) ON DELETE CASCADE,
+        FOREIGN KEY (run, dv, nombres, apellido_materno, apellido_materno) REFERENCES Persona(run, dv, nombres, apellido_materno, apellido_materno) ON DELETE CASCADE,
         UNIQUE (numero_estudiante)',
 
     'UltimoLogro' =>
@@ -113,12 +116,13 @@ $tablas_iniciales = array(
     'Curso' =>
         'sigla_curso VARCHAR(10),
         nombre_curso VARCHAR(100),
+        periodo VARCHAR(30),
         ciclo VARCHAR(30),
         nivel INT,
         secciones INT,
         prerequisito CHAR(1)
         caracter caracter_enum,
-        PRIMARY KEY (sigla_curso)',
+        PRIMARY KEY (sigla_curso, periodo)',
 
     'HistorialAcadémico' =>
         'numero_estudiante INT,
@@ -131,35 +135,41 @@ $tablas_iniciales = array(
         PRIMARY KEY (numero_estudiante, sigla_curso, seccion),
         FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante),
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso)',
-    
+        
+        
+    'OfertaAcademica' =>
+        'sigla_curso VARCHAR(30),
+        run_profesor INT,
+        seccion_curso VARCHAR(30),
+        periodo VARCHAR(30),
+        inscritos INT,
+        duracion CHAR(1),
+        fecha_fin VARCHAR(30),
+        fecha_inicio VARCHAR(30),
+        codigo_plan VARCHAR(30),
+        hora_inicio VARCHAR(30),
+        dia VARCHAR(30),
+        horario_fin VARCHAR(30),
+        sala VARCHAR(30),
+        PRIMARY KEY (sigla_curso, seccion_curso, codigo_plan),
+        FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso) ON DELETE CASCADE,
+        FOREIGN KEY (run_profesor) REFERENCES Profesor(run) ON DELETE CASCADE,
+        FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan) ON DELETE CASCADE,
+        FOREIGN KEY (sala) REFERENCES Salas(sala) ON DELETE CASCADE',
+        
     'Facultad' =>
-        'nombre VARCHAR(20),
+        'nombre_facultad VARCHAR(20),
         codigo_departamento INT,
-        PRIMARY KEY (nombre)',
+        PRIMARY KEY (nombre_facultad)',
     
     'Carrera' =>
-        'nombre VARCHAR(20),
-        PRIMARY KEY (nombre)',
+        'nombre_carrera VARCHAR(20),
+        PRIMARY KEY (nombre_carrera)',
     
     'Departamento' =>
-        'codigo INT,
+        'codigo_departamento INT,
         nombre VARCHAR(30),
-        PRIMARY KEY (codigo)',
-
-    'OfertaAcadémica' =>
-        'codigo_plan VARCHAR(30),
-        sigla_curso VARCHAR(30),
-        seccion INT,
-        fecha_inicio DATE,
-        fecha_fin DATE,
-        duracion CHAR(10),
-        inscritos INT,
-        hora_inicio VARCHAR(15),
-        dia VARCHAR(15),
-        hora_fin VARCHAR(15),
-        PRIMARY KEY (seccion),
-        FOREIGN KEY (codigo_plan) REFERENCES Plan_de_Estudio(codigo_plan),
-        FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso)',
+        PRIMARY KEY (codigo_departamento)',
 
     'Salas' =>
         'sala VARCHAR(30),
@@ -182,25 +192,6 @@ $tablas_iniciales = array(
         PRIMARY KEY (numero_estudiante, nombre_carrera),
         FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante) ON DELETE CASCADE,
         FOREIGN KEY (nombre_carrera) REFERENCES Carrera(nombre_carrera) ON DELETE CASCADE',
-
-    'OfertaAcademica' =>
-        'sigla_curso VARCHAR(30),
-        run_profesor INT,
-        seccion_curso VARCHAR(30),
-        inscritos INT,
-        duracion CHAR(1),
-        fecha_fin VARCHAR(30),
-        fecha_inicio VARCHAR(30),
-        codigo_plan INT,
-        hora_inicio VARCHAR(30),
-        dia VARCHAR(30),
-        horario_fin VARCHAR(30),
-        sala VARCHAR(30),
-        PRIMARY KEY (sigla_curso, seccion_curso, codigo_plan),
-        FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso) ON DELETE CASCADE,
-        FOREIGN KEY (run_profesor) REFERENCES Profesor(run) ON DELETE CASCADE,
-        FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan) ON DELETE CASCADE,
-        FOREIGN KEY (sala) REFERENCES Salas(sala) ON DELETE CASCADE',
 
     'CursoEquivalente' =>
         'sigla_curso_2 VARCHAR(10),

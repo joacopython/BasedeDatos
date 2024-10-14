@@ -322,6 +322,8 @@ function limpiar_planes($data){
         'Carrera' => [],
         'PlanEstudio' => [],
         'Jornada' => [],
+        'InscripcionCarrera' => [],
+        'OfertaAcademica' => []
         ];
 
     $datos_malos = [
@@ -329,44 +331,70 @@ function limpiar_planes($data){
         'Carrera' => [],
         'PlanEstudio' => [],
         'Jornada' => [],
+        'InscripcionCarrera' => [],
+        'OfertaAcademica' => []
         ];
 
     foreach ($data as $key => &$valor) {
         if ($key == 'Código Plan') {
             if (!is_string($valor) || empty($valor)) {
                 $datos_malos['PlanEstudio']['codigo_plan'] = $valor;
+                $datos_malos['OfertaAcademica']['codigo_plan'] = $valor;
                 $valor = NULL;
             }
             $tablas['PlanEstudio']['codigo_plan'] = $valor;
+            $datos_malos['OfertaAcademica']['codigo_plan'] = $valor;
         }
+
         elseif ($key == "Facultad"){
             if (!is_string($valor) || empty($valor)) {
-                $datos_malos['Facultad']['nombre'] = $valor;
+                $datos_malos['Facultad']['nombre_facultad'] = $valor;
+                $datos_malos['PlanEstudio']['nombre_facultad'] = $valor;
                 $valor = NULL;
             }
-            $tablas['Facultad']['nombre'] = $valor;
+            $tablas['Facultad']['nombre_facultad'] = $valor;
+            $tablas['PlanEstudio']['nombre_facultad'] = $valor;
         }
-        elseif ($key == "Carrera"){
-            if (!is_string($valor) || empty($valor)) {
-                $datos_malos['Carrera']['nombre'] = $valor;
+
+        elseif ($key === "Carrera"){
+            if (!is_string($valor)){
+                $datos_malos['PlanEstudio']['nombre_carrera'] = $valor;
+                $datos_malos['Carrera']['nombre_carrera'] = $valor;
+                $datos_malos['InscripcionCarrera']['nombre_carrera'] = $valor;
                 $valor = NULL;
             }
-            $tablas['Carrera']['nombre'] = $valor;
+            $tablas['PlanEstudio']['nombre_carrera'] = $valor;
+            $tablas['Carrera']['nombre_carrera'] = $valor;
+            $tablas['InscripcionCarrera']['nombre_carrera'] = $valor;
         }
+
         elseif ($key == "Plan"){
             if (!is_string($valor) || empty($valor)) {
-                $datos_malos['PlanEstudio']['nombre'] = $valor;
+                $datos_malos['PlanEstudio']['nombre_plan'] = $valor;
                 $valor = NULL;
             }
-            $tablas['PlanEstudio']['nombre'] = $valor;
+            $tablas['PlanEstudio']['nombre_plan'] = $valor;
         }
+
         elseif ($key == "Jornada"){
-            if (!is_string($valor) || empty($valor)) {
+            if (is_string($valor)) {
+                if ($valor == 'Diurno'){
+                    $tablas['Jornada']['jornada_diurna'] = true;
+                }
+                elseif ($valor == 'Vespertino'){
+                    $tablas['Jornada']['jornada_vespertina'] = true;
+                } else{
+                    $datos_malos['Jornada']['jornada_diurna'] = $valor;
+                    $datos_malos['Jornada']['jornada_vespertina'] = $valor; 
+                    $valor = false;
+                }
+            } else{
                 $datos_malos['Jornada']['jornada_diurna'] = $valor; 
-                $valor = NULL;
+                $datos_malos['Jornada']['jornada_vespertina'] = $valor; 
+                $valor = false;
             }
-            $tablas['PlanEstudio']['codigo_plan'] = $valor;
-        }            
+        }   
+
         elseif ($key == "Sede"){
             if (!is_string($valor) || empty($valor)) {
                 $datos_malos['PlanEstudio']['sede'] = $valor; 
@@ -374,6 +402,7 @@ function limpiar_planes($data){
             }
             $tablas['PlanEstudio']['sede'] = $valor;
         } 
+
         elseif ($key == "Grado"){
             if (!is_string($valor) || empty($valor)) {
                 $datos_malos['PlanEstudio']['grado'] = $valor; 
@@ -381,6 +410,7 @@ function limpiar_planes($data){
             }
             $tablas['PlanEstudio']['grado'] = $valor;
         }
+
         elseif ($key == "Modalidad"){
             if (!is_string($valor) || empty($valor)) {
                 $datos_malos['PlanEstudio']['modalidad'] = $valor;
@@ -388,6 +418,7 @@ function limpiar_planes($data){
             }
             $tablas['PlanEstudio']['modalidad'] = $valor;
         }
+
         elseif ($key == "Inicio Vigencia"){
             if (es_fecha_valida($valor) == false || empty($valor)) {
                 $datos_malos['PlanEstudio']['inicio'] = $valor;
@@ -502,6 +533,373 @@ function limpiar_docentes_planificados($data){
 
 function limpiar_notas($data){
     // exequiel
+    $tablas = [
+        'Estudiante' => [],
+        'Persona' => [],
+        'Carrera' => [],
+        'InscripcionCarrera' => [],
+        'PlanEstudio' => [],
+        'HistorialAcademico' => [],
+        'Curso' => [],
+        'OfertaAcademica' => []
+    ];
 
+    $datos_malos = [
+        'Estudiante' => [],
+        'Persona' => [],
+        'Carrera' => [],
+        'InscripcionCarrera' => [],
+        'PlanEstudio' => [],
+        'HistorialAcademico' => [],
+        'Curso' => [],
+        'OfertaAcademica' => []
+    ];
+
+    foreach ($data as $key => &$valor){
+        if ($key === "Código Plan"){
+            if (!is_string($valor)){
+                $datos_malos['PlanEstudio']['codigo_plan'] = $valor;
+                $valor = NULL;
+            }  // las primary key malas no deberian agregarse a $tablas vdd?
+            $tablas['PlanEstudio']['codigo_plan'] = $valor;
+        }
+
+        elseif ($key === "Plan"){
+            if (!is_string($valor) || empty($valor)) {
+                $datos_malos['PlanEstudio']['nombre_plan'] = $valor;
+                $valor = NULL;
+            }
+            $tablas['PlanEstudio']['nombre_plan'] = $valor;
+        }
+
+        elseif ($key === "Cohorte"){
+            if (!is_string($valor)){
+                $datos_malos['Estudiante']['cohorte'] = $valor;
+            }
+            $tablas['Estudiante']['cohorte'] = $valor;
+        }
+
+        elseif ($key == "Sede"){
+            if (!is_string($valor) || empty($valor)) {
+                $datos_malos['PlanEstudio']['sede'] = $valor; 
+                $valor = NULL;
+            }
+            $tablas['PlanEstudio']['sede'] = $valor;
+        } 
+
+        elseif ($key === "RUN"){
+            if (!is_numeric($valor)){
+                $datos_malos['Estudiante']['run'] = $valor;
+                $datos_malos['Persona']['run'] = $valor;
+                $datos_malos['EmailPersonal']['run'] = $valor;
+                $datos_malos['Telefono']['run'] = $valor;
+            }
+            elseif (is_numeric($valor)){
+                $valor = (int)$valor;
+                $tablas['Estudiante']['run'] = $valor;
+                $tablas['Persona']['run'] = $valor;
+                $tablas['EmailPersonal']['run'] = $valor;
+                $tablas['Telefono']['run'] = $valor;
+            }
+        }
+
+        elseif ($key === "DV"){
+            if ((is_numeric($valor) || strtoupper($valor) === 'K' ) && (gettype($valor) === CHAR(1))) {
+                $tablas['Estudiante']['dv'] = $valor;
+                $tablas['Persona']['dv'] = $valor;
+                $tablas['EmailPersonal']['dv'] = $valor;
+                $tablas['Telefono']['dv'] = $valor;
+            }
+            else{
+                $datos_malos['Estudiante']['dv'] = $valor;
+                $datos_malos['Persona']['dv'] = $valor;
+                $datos_malos['EmailPersonal']['dv'] = $valor;
+                $datos_malos['Telefono']['dv'] = $valor;
+            }
+        }
+         // Agregar atributos a estudiante //
+        elseif ($key === "Nombres"){
+            if (!is_string($valor)){
+                $datos_malos['Estudiante']['nombres'] = $valor;
+                $datos_malos['Persona']['nombres'] = $valor;
+                $valor = NULL;
+            }
+            $tablas['Estudiante']['nombres'] = $valor;
+            $tablas['Persona']['nombres'] = $valor;
+        }
+
+        elseif ($key === "Apellido Paterno"){
+            if (!is_string($valor)){
+                $datos_malos['Estudiante']['apellido_materno'] = $valor;
+                $datos_malos['Persona']['apellido_materno'] = $valor;
+                $valor = NULL;
+            }
+            $tablas['Estudiante']['apellido_paterno'] = $valor;
+            $tablas['Persona']['apellido_paterno'] = $valor;
+        }
+        elseif ($key === "Apellido Materno"){  
+            if (!is_string($valor)){
+                $datos_malos['Estudiante']['apellido_materno'] = $valor;
+                $datos_malos['Persona']['apellido_materno'] = $valor;
+                $valor = NULL;
+            }
+            $tablas['Estudiante']['apellido_materno'] = $valor;
+            $tablas['Persona']['apellido_materno'] = $valor;
+        }
+        // Agregar atributos a estudiane //
+        else if ($key === "Número de Alumno"){
+            if (is_numeric($valor)){
+                $valor = (int)$valor;
+                $tablas['Estudiante']['numero_estudiante'] = $valor;
+                $tablas['HistorialAcademico']['numero_estudiante'] = $valor;
+            }
+            else{
+                $tablas['Estudiante']['numero_estudiante'] = $valor;
+                $tablas['HistorialAcademico']['numero_estudiante'] = $valor;
+            }
+        }
+
+        elseif ($key === "Periodo Asignatura"){  
+            if (!is_string($valor)){
+                $datos_malos['HistorialAcademico']['periodo'] = $valor;
+                $datos_malos['Curso']['periodo'] = $valor;
+                $valor = NULL;
+            }
+            $tablas['HistorialAcademico']['periodo'] = $valor;
+            $tablas['Curso']['periodo'] = $valor;
+        }
+
+        elseif ($key === "Código Asignatura"){  
+            if (!is_string($valor)){
+                $datos_malos['HistorialAcademico']['sigla_curso'] = $valor;
+                $datos_malos['OfertaAcademica']['sigla_curso'] = $valor;
+                $datos_malos['Curso']['sigla_curso'] = $valor;
+                $valor = NULL;
+            }
+            $tablas['HistorialAcademico']['sigla_curso'] = $valor;
+            $tablas['OfertaAcademica']['sigla_curso'] = $valor;
+            $tablas['Curso']['sigla_curso'] = $valor;
+        }
+
+        elseif ($key === "Convocatoria"){  
+            if (!is_string($valor)){
+                $datos_malos['HistorialAcademico']['convocatoria'] = $valor;
+                $valor = NULL;
+            }
+            $tablas['HistorialAcademico']['convocatoria'] = $valor;
+        }
+
+        elseif ($key === "Calificación"){  
+            if (!is_string($valor)){
+                $datos_malos['HistorialAcademico']['calificacion'] = $valor;
+                $valor = NULL;
+            }
+            $tablas['HistorialAcademico']['calificacion'] = $valor;
+        }
+
+        elseif ($key === "Nota"){  
+            if (!is_numeric($valor)){
+                $datos_malos['HistorialAcademico']['nota'] = $valor;
+                $valor = NULL;
+            }
+            $valor = (float) $valor
+            $tablas['HistorialAcademico']['nota'] = $valor;
+        }        
+    }
+
+function limpiar_planeacion($data){
+        // exequiel
+        $tablas = [
+            'Estudiante' => [],
+            'Persona' => [],
+            'Bloqueo' => [],
+            'UltimoLogro' => [],
+            'EmailPersonal' => [],
+            'Telefono' => [],
+            'Carrera' => [],
+            'InscripcionCarrera' => [],
+            'PlanEstudio' => [],
+            'HistorialAcademico' => [],
+            'Curso' => [],
+            'OfertaAcademica' => []
+        ];
+    
+        $datos_malos = [
+            'Estudiante' => [],
+            'Persona' => [],
+            'Bloqueo' => [],
+            'UltimoLogro' => [],
+            'EmailPersonal' => [],
+            'Telefono' => [],
+            'Carrera' => [],
+            'InscripcionCarrera' => [],
+            'PlanEstudio' => [],
+            'HistorialAcademico' => [],
+            'Curso' => [],
+            'OfertaAcademica' => []
+        ];
+    
+        foreach ($data as $key => &$valor) {
+            if ($key === "Periodo"){  
+                if (!is_string($valor)){
+                    $datos_malos['HistorialAcademico']['periodo'] = $valor;
+                    $datos_malos['Curso']['periodo'] = $valor;
+                    $datos_malos['OfertaAcademica']['periodo'] = $valor
+                    $valor = NULL;
+                }
+                $tablas['HistorialAcademico']['periodo'] = $valor;
+                $tablas['Curso']['periodo'] = $valor;
+                $tablas['OfertaAcademica']['periodo'] = $valor
+            }
+
+            elseif ($key == "Sede"){
+                if (!is_string($valor) || empty($valor)) {
+                    $datos_malos['PlanEstudio']['sede'] = $valor; 
+                    $valor = NULL;
+                }
+                $tablas['PlanEstudio']['sede'] = $valor;
+            } 
+
+            elseif ($key === "Facultad"){
+                if (!is_string($valor) || empty($valor)) {
+                    $datos_malos['PlanEstudio']['nombre_plan'] = $valor;
+                    $valor = NULL;
+                }
+                $tablas['PlanEstudio']['nombre_plan'] = $valor;
+            }
+    
+            elseif ($key === "Cohorte"){
+                if (!is_string($valor)){
+                    $datos_malos['Estudiante']['cohorte'] = $valor;
+                }
+                $tablas['Estudiante']['cohorte'] = $valor;
+            }
+    
+            elseif ($key == "Sede"){
+                if (!is_string($valor) || empty($valor)) {
+                    $datos_malos['PlanEstudio']['sede'] = $valor; 
+                    $valor = NULL;
+                }
+                $tablas['PlanEstudio']['sede'] = $valor;
+            } 
+    
+            elseif ($key === "RUN"){
+                if (!is_numeric($valor)){
+                    $datos_malos['Estudiante']['run'] = $valor;
+                    $datos_malos['Persona']['run'] = $valor;
+                    $datos_malos['EmailPersonal']['run'] = $valor;
+                    $datos_malos['Telefono']['run'] = $valor;
+                }
+                elseif (is_numeric($valor)){
+                    $valor = (int)$valor;
+                    $tablas['Estudiante']['run'] = $valor;
+                    $tablas['Persona']['run'] = $valor;
+                    $tablas['EmailPersonal']['run'] = $valor;
+                    $tablas['Telefono']['run'] = $valor;
+                }
+            }
+    
+            elseif ($key === "DV"){
+                if ((is_numeric($valor) || strtoupper($valor) === 'K' ) && (gettype($valor) === CHAR(1))) {
+                    $tablas['Estudiante']['dv'] = $valor;
+                    $tablas['Persona']['dv'] = $valor;
+                    $tablas['EmailPersonal']['dv'] = $valor;
+                    $tablas['Telefono']['dv'] = $valor;
+                }
+                else{
+                    $datos_malos['Estudiante']['dv'] = $valor;
+                    $datos_malos['Persona']['dv'] = $valor;
+                    $datos_malos['EmailPersonal']['dv'] = $valor;
+                    $datos_malos['Telefono']['dv'] = $valor;
+                }
+            }
+             // Agregar atributos a estudiante //
+            elseif ($key === "Nombres"){
+                if (!is_string($valor)){
+                    $datos_malos['Estudiante']['nombres'] = $valor;
+                    $datos_malos['Persona']['nombres'] = $valor;
+                    $valor = null;
+                }
+                $tablas['Estudiante']['nombres'] = $valor;
+                $tablas['Persona']['nombres'] = $valor;
+            }
+    
+            elseif ($key === "Apellido Paterno"){
+                if (!is_string($valor)){
+                    $datos_malos['Estudiante']['apellido_materno'] = $valor;
+                    $datos_malos['Persona']['apellido_materno'] = $valor;
+                    $valor = null;
+                }
+                $tablas['Estudiante']['apellido_paterno'] = $valor;
+                $tablas['Persona']['apellido_paterno'] = $valor;
+            }
+            elseif ($key === "Apellido Materno"){  
+                if (!is_string($valor)){
+                    $datos_malos['Estudiante']['apellido_materno'] = $valor;
+                    $datos_malos['Persona']['apellido_materno'] = $valor;
+                    $valor = null;
+                }
+                $tablas['Estudiante']['apellido_materno'] = $valor;
+                $tablas['Persona']['apellido_materno'] = $valor;
+            }
+            // Agregar atributos a estudiane //
+            else if ($key === "Número de Alumno"){
+                if (is_numeric($valor)){
+                    $valor = (int)$valor;
+                    $tablas['Estudiante']['numero_estudiante'] = $valor;
+                    $tablas['HistorialAcademico']['numero_estudiante'] = $valor;
+                }
+                else{
+                    $datos_malos['Estudiante']['numero_estudiante'] = $valor;
+                    $tablas['HistorialAcademico']['numero_estudiante'] = $valor;
+                }
+            }
+    
+            elseif ($key === "Periodo Asignatura"){  
+                if (!is_string($valor)){
+                    $datos_malos['HistorialAcademico']['periodo'] = $valor;
+                    $valor = NULL;
+                }
+                $tablas['HistorialAcademico']['periodo'] = $valor;
+            }
+    
+            elseif ($key === "Código Asignatura"){  
+                if (!is_string($valor)){
+                    $datos_malos['HistorialAcademico']['sigla_curso'] = $valor;
+                    $datos_malos['OfertaAcademica']['sigla_curso'] = $valor;
+                    $datos_malos['Curso']['sigla_curso'] = $valor;
+                    $valor = NULL;
+                }
+                $tablas['HistorialAcademico']['sigla_curso'] = $valor;
+                $datos_malos['OfertaAcademica']['sigla_curso'] = $valor;
+                $datos_malos['Curso']['sigla_curso'] = $valor;
+            }
+    
+            elseif ($key === "Convocatoria"){  
+                if (!is_string($valor)){
+                    $datos_malos['HistorialAcademico']['convocatoria'] = $valor;
+                    $valor = NULL;
+                }
+                $tablas['HistorialAcademico']['convocatoria'] = $valor;
+            }
+    
+            elseif ($key === "Calificación"){  
+                if (!is_string($valor)){
+                    $datos_malos['HistorialAcademico']['calificacion'] = $valor;
+                    $valor = NULL;
+                }
+                $tablas['HistorialAcademico']['calificacion'] = $valor;
+            }
+    
+            elseif ($key === "Nota"){  
+                if (!is_numeric($valor)){
+                    $datos_malos['HistorialAcademico']['nota'] = $valor;
+                    $valor = NULL;
+                }
+                $valor = (float) $valor
+                $tablas['HistorialAcademico']['nota'] = $valor;
+            }        
+        }
+}
 }
 ?>
