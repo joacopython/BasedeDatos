@@ -108,8 +108,7 @@ $tablas_iniciales = array(
         jornada jornada_enum,
         modalidad modalidad_enum,
         PRIMARY KEY (codigo_plan),
-        FOREIGN KEY (nombre_facultad) REFERENCES Facultad(nombre_facultad),
-        FOREIGN KEY (nombre_carrera) REFERENCES Carrera(nombre)',
+        FOREIGN KEY (nombre_facultad) REFERENCES Facultad(nombre_facultad)',
 
     'Curso' =>
         'sigla_curso VARCHAR(10),
@@ -161,10 +160,6 @@ $tablas_iniciales = array(
         codigo_departamento INT,
         PRIMARY KEY (nombre_facultad)',
     
-    'Carrera' =>
-        'nombre_carrera VARCHAR(20),
-        PRIMARY KEY (nombre_carrera)',
-    
     'Departamento' =>
         'codigo_departamento INT,
         nombre VARCHAR(30),
@@ -178,19 +173,18 @@ $tablas_iniciales = array(
     
     'IncluyeCurso' =>
         'codigo_plan VARCHAR(30),
-        nombre_carrera VARCHAR(30),
         sigla_curso VARCHAR(30),
-        PRIMARY KEY (nombre_plan, codigo_plan, sigla_curso),
-        FOREIGN KEY (nombre_plan, codigo_plan) REFERENCES PlanEstudio(nombre, codigo) ON DELETE CASCADE,
+        PRIMARY KEY (codigo_plan, sigla_curso),
+        FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo) ON DELETE CASCADE,
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso)
         ON DELETE CASCADE',
 
-    'InscripcionCarrera' =>
+    'InscripcionAlumno' =>
         'numero_estudiante INT,
-        nombre_carrera VARCHAR(30),
-        PRIMARY KEY (numero_estudiante, nombre_carrera),
+        codigo_plan VARCHAR(10),
+        PRIMARY KEY (numero_estudiante, codigo_plan),
         FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante) ON DELETE CASCADE,
-        FOREIGN KEY (nombre_carrera) REFERENCES Carrera(nombre_carrera) ON DELETE CASCADE',
+        FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan) ON DELETE CASCADE',
 
     'CursoEquivalente' =>
         'sigla_curso_2 VARCHAR(10),

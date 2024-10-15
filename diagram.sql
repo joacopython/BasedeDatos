@@ -118,8 +118,7 @@ CREATE TABLE PlanEstudio (
     jornada jornada_enum,
     modalidad modalidad_enum,
     PRIMARY KEY (codigo_plan),
-    FOREIGN KEY (nombre_facultad) REFERENCES Facultad(nombre_facultad),
-    FOREIGN KEY (nombre_carrera) REFERENCES Carrera(nombre)
+    FOREIGN KEY (nombre_facultad) REFERENCES Facultad(nombre_facultad)
 );
 
 CREATE TABLE Curso (
@@ -175,11 +174,6 @@ CREATE TABLE Facultad (
     PRIMARY KEY (nombre_facultad)
 );
 
-CREATE TABLE Carrera (
-    nombre_carrera VARCHAR(50), 
-    PRIMARY KEY (nombre_facultad)
-);
-
 CREATE TABLE Departamento (
     codigo_departamento INT,
     nombre VARCHAR(30),
@@ -194,7 +188,6 @@ CREATE TABLE Salas(
     vacantes INT,
     edificio VARCHAR(30),
     PRIMARY KEY (sala)
-
 );
 
 CREATE TABLE IncluyeCurso(
@@ -207,12 +200,12 @@ CREATE TABLE IncluyeCurso(
     ON DELETE CASCADE
 );
 
-CREATE TABLE InscripcionCarrera (
+CREATE TABLE InscripcionAlumno (
     numero_estudiante INT,
-    nombre_carrera VARCHAR(30),
-    PRIMARY KEY (numero_estudiante, nombre_carrera),
+    codigo_plan VARCHAR(10),
+    PRIMARY KEY (numero_estudiante, codigo_plan),
     FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante) ON DELETE CASCADE,
-    FOREIGN KEY (nombre_carrera) REFERENCES Carrera(nombre_carrera) ON DELETE CASCADE
+    FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan) ON DELETE CASCADE
 );
 
 
