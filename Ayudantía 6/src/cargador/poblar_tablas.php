@@ -17,10 +17,10 @@ try {
                 }
                 $data = array_combine($header, $data);
                 //tabla esel n
-                $tabla = tabla_handler($tabla_nombre, $data);
+                $tablas = tabla_handler($tabla_nombre, $data);
                 // Realizar toda corrección necesaria antes de insertar
-                foreach (){
-                    insertar_en_tabla($db, $tabla, $data);
+                foreach ($tablas as $key => &$valor) {
+                    insertar_en_tabla($db, $key, $valor);
                 }
             }
             fclose($file);

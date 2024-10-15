@@ -40,15 +40,12 @@ CREATE TABLE Telefono (
 CREATE TABLE Estudiante (
     run INT,
     dv CHAR(1),
-    nombres VARCHAR(100), -- 
-    apellido_paterno VARCHAR(50), --
-    apellido_materno VARCHAR(50), --
     cohorte VARCHAR(30),
     numero_estudiante INT,
     fecha_logro DATE,
     ultima_carga DATE,
     PRIMARY KEY (numero_estudiante),
-    FOREIGN KEY (run, dv, nombres, apellido_materno, apellido_materno) REFERENCES Persona(run, dv, nombres, apellido_materno, apellido_materno) ON DELETE CASCADE,
+    FOREIGN KEY (run, dv) REFERENCES Persona(run, dv) ON DELETE CASCADE,
     UNIQUE (numero_estudiante)
 );
 
@@ -164,7 +161,7 @@ CREATE TABLE OfertaAcademica (
     dia VARCHAR(30),
     horario_fin VARCHAR(30),
     sala VARCHAR(30),
-    codigo_departamento INT,
+    profesor_principal BOOLEAN,
     PRIMARY KEY (sigla_curso, seccion_curso, codigo_plan, periodo),
     FOREIGN KEY (sigla_curso, periodo) REFERENCES Curso(sigla_curso, periodo) ON DELETE CASCADE,
     FOREIGN KEY (run_profesor) REFERENCES Profesor(run) ON DELETE CASCADE,
@@ -190,10 +187,14 @@ CREATE TABLE Departamento (
 );
 
 CREATE TABLE Salas(
+    periodo VARCHAR(30),
+    sigla_curso VARCHAR(30),
+    codigo_plan VARCHAR(30),
     sala VARCHAR(30),
     vacantes INT,
     edificio VARCHAR(30),
     PRIMARY KEY (sala)
+
 );
 
 CREATE TABLE IncluyeCurso(
