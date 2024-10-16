@@ -1,0 +1,44 @@
+WITH EstudianteVigente AS (
+  SELECT 
+    e.numero_estudiante
+  FROM 
+    Estudiante e
+  JOIN 
+    HistorialAcadémico h ON e.numero_estudiante = h.numero_estudiante
+  WHERE 
+    e.numero_estudiante = 'NUMERO_ESTUDIANTE' 
+    AND h.periodo = '2024-2'
+),
+CursosAprobados AS (
+  SELECT 
+    h.sigla_curso
+  FROM 
+    HistorialAcadémico h
+  WHERE 
+    h.numero_estudiante = 'NUMERO_ESTUDIANTE'
+    AND h.calificacion IN ('SO', 'MB', 'B', 'SU', 'EX', 'A')
+),
+CursosDisponibles2025 AS (
+  SELECT 
+    o.sigla_curso
+  FROM 
+    OfertaAcademica o
+  WHERE 
+    o.periodo = '2025-1'
+),
+PropuestaTomaRamos AS (
+  SELECT 
+    o.sigla_curso
+  FROM 
+    CursosDisponibles2025 o
+  LEFT JOIN 
+    CursosAprobados ca ON o.sigla_curso = ca.sigla_curso
+  WHERE 
+    ca.sigla_curso IS NULL
+)
+SELECT 
+  p.sigla_curso AS propuesta_cursos
+FROM 
+  PropuestaTomaRamos p
+JOIN 
+  EstudianteVigente e ON 1 = 1;

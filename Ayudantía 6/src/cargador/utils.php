@@ -17,16 +17,23 @@
             // Crear la consulta preparada con los nombres de columnas y placeholders
             $sql = "INSERT INTO $tabla_nombre ($columnas_str) VALUES ($placeholders);";
 
+
             // Preparar y ejecutar la sentencia
             $stmt = $database->prepare($sql);
             $stmt->execute($valores);
 
             // Confirmar la transacción
             $database->commit();
+
         } catch (Exception $e) {
             // Revertir la transacción si hay un error
             $database->rollBack();
-            echo "Error al insertar en la tabla $tabla_nombre: " . $e->getMessage();
+            $errorCode = $e->getCode();
+            if ($errorCode != 23505) {
+                echo "Error al insertar en la tabla $tabla_nombre: " . $e->getMessage(). "\n";
+                echo "columna= ". $columnas_str . "//valor= " . $placeholders;
+                exit();
+            }
         }
     }
 ?>

@@ -3,11 +3,14 @@
 $formato_intitucional = '/^.+@lamejor\.cl$/';
 //preg_match($formato_intitucional, $email_institucional)
 
-function es_fecha_valida($fecha) {
-    $formato = 'd/m/y';
-    $fecha_obj = DateTime::createFromFormat($formato, $fecha);
-    return $fecha_obj && $fecha_obj->format($formato) === $fecha;
+function remove_bom($string) {
+    if (substr($string, 0, 3) === "\xef\xbb\xbf") {
+        $string = substr($string, 3);
+    }
+    return $string;
 }
+
+
 
 function es_hora_valida($hora) {
     $formato = 'H:i';  // Formato de 24 horas (ejemplo: 12:41)
@@ -102,38 +105,35 @@ function tabla_handler($nombre_archivo, $data) {
 
 function limpiar_estudiantes($data){
     $tablas = [
-        'Estudiante' => [],
         'Persona' => [],
+        'Estudiante' => [],
         'Bloqueo' => [],
         'UltimoLogro' => [],
         'EmailPersonal' => [],
         'Telefono' => [],
-        'Carrera' => [],
-        'InscripcionCarrera' => [],
         'PlanEstudio' => []
     ];
 
     $datos_malos = [
-        'Estudiante' => [],
         'Persona' => [],
+        'Estudiante' => [],
         'Bloqueo' => [],
         'UltimoLogro' => [],
         'EmailPersonal' => [],
         'Telefono' => [],
-        'Carrera' => [],
-        'InscripcionCarrera' => [],
         'InscripcionAlumno' => [],
         'PlanEstudio' => []
     ];
     
     foreach ($data as $key => &$valor) {
-        if ($key === "Código Plan"){
+        if (remove_bom($key) === "Código Plan"){
             if (!is_string($valor)){
                 $datos_malos['PlanEstudio']['codigo_plan'] = $valor;
                 $datos_malos['InscripcionAlumno']['codigo_plan'] = $valor;
                 $valor = null;
             }
             $tablas['PlanEstudio']['codigo_plan'] = $valor;
+            $tablas['InscripcionAlumno']['codigo_plan'] = $valor;
         }
         elseif ($key === "Carrera"){
             if (!is_string($valor)){
@@ -150,15 +150,15 @@ function limpiar_estudiantes($data){
         }
 
         elseif ($key === "Bloqueo"){
-            if ($valor === "N"){
-                $valor = false;
+            if (trim(strtoupper($valor)) === "N"){
+                $valor = 'FALSE';
             }
-            else if ($valor === "S"){
-                $valor = true;
+            else if (trim(strtoupper($valor)) === "S"){
+                $valor = 'TRUE';
             }
             else{
                 $datos_malos['Bloqueo']['bloqueo'] = $valor;
-                $valor = null;
+                $valor = 'FALSE';
             }
             $tablas['Bloqueo']['bloqueo'] = $valor;
         }
@@ -174,36 +174,48 @@ function limpiar_estudiantes($data){
         else if ($key === "RUN"){
             if (!is_numeric($valor)){
                 //pasar a datos malos
-                $datos_malos['Estudiante']['run'] = $valor;
                 $datos_malos['Persona']['run'] = $valor;
+                $datos_malos['Estudiante']['run'] = $valor;
                 $datos_malos['EmailPersonal']['run'] = $valor;
                 $datos_malos['Telefono']['run'] = $valor;
             }
             elseif (is_numeric($valor)){
                 $valor = (int)$valor;
-                $tablas['Estudiante']['run'] = $valor;
                 $tablas['Persona']['run'] = $valor;
+                $tablas['Estudiante']['run'] = $valor;
                 $tablas['EmailPersonal']['run'] = $valor;
                 $tablas['Telefono']['run'] = $valor;
             }
         }
-        else if ($key === "Numero de Alumno"){
-            if (is_numeric($valor)){
-                $valor = (int)$valor;
-                $tablas['Estudiante']['numero_estudiante'] = $valor;
-                $tablas['Bloqueo']['numero_estudiante'] = $valor;
-                $tablas['UltimoLogro']['numero_estudiante'] = $valor;
-                $tablas['InscripcionAlumno']['numero_estudiante'] = $valor;
+        else if ($key === "Número de alumno"){
+            if ($valor === NULL){
+                $tablas['Estudiante']['numero_estudiante'] = -1;
+                $tablas['Bloqueo']['numero_estudiante'] = -1;
+                $tablas['UltimoLogro']['numero_estudiante'] = -1;
+                $tablas['InscripcionAlumno']['numero_estudiante'] = -1;
+            }else{
+                if (is_numeric($valor)){
+                    $valor = (int)$valor;
+                    $tablas['Estudiante']['numero_estudiante'] = $valor;
+                    $tablas['Bloqueo']['numero_estudiante'] = $valor;
+                    $tablas['UltimoLogro']['numero_estudiante'] = $valor;
+                    $tablas['InscripcionAlumno']['numero_estudiante'] = $valor;
+                }
+                else{
+                    $datos_malos['Estudiante']['numero_estudiante'] = $valor;
+                    $datos_malos['Bloqueo']['numero_estudiante'] = $valor;
+                    $datos_malos['UltimoLogro']['numero_estudiante'] = $valor;
+                    $datos_malos['InscripcionAlumno']['numero_estudiante'] = $valor;
+                    $tablas['Estudiante']['numero_estudiante'] = -1;
+                    $tablas['Bloqueo']['numero_estudiante'] = -1;
+                    $tablas['UltimoLogro']['numero_estudiante'] = -1;
+                    $tablas['InscripcionAlumno']['numero_estudiante'] = -1;
+                }
             }
-            else{
-                $datos_malos['Estudiante']['numero_estudiante'] = $valor;
-                $datos_malos['Bloqueo']['numero_estudiante'] = $valor;
-                $datos_malos['UltimoLogro']['numero_estudiante'] = $valor;
-                $datos_malos['InscripcionAlumno']['numero_estudiante'] = $valor;
-            }
+
         }
         else if ($key === "DV"){
-            if ((is_numeric($valor) || strtoupper($valor) === 'K' ) && (gettype($valor) === CHAR(1))) {
+            if ((is_numeric($valor) || strtoupper($valor) === 'K' ) && (strlen($valor) === 1)) {
                 $tablas['Persona']['dv'] = $valor;
             }
             else{
@@ -211,36 +223,30 @@ function limpiar_estudiantes($data){
             }
         }
 
-        else if ($key === "Nombres"){
-            if (is_string($valor) && is_string($data[''])){
-                $valor = $valor + " " + $data[''];
-            }
+        else if ($key === "Nombres"){ //que awonao sigue haciendo la manera perkin
+            if (is_string($valor) && is_string($data[''])){//solo entra si es string
+                $valor = $valor . " " . $data['']; 
+             }
             else {
-                $datos_malos['Estudiante']['nombres'] = $valor;
                 $datos_malos['Persona']['nombres'] = $valor;
                 $valor = null;
             }
-            $tablas['Estudiante']['nombres'] = $valor;
             $tablas['Persona']['nombres'] = $valor;
         }
 
         else if ($key === "Primer Apellido"){
             if (!is_string($valor)){
-                $datos_malos['Estudiante']['apellido_materno'] = $valor;
-                $datos_malos['Persona']['apellido_materno'] = $valor;
+                $datos_malos['Persona']['apellido_paterno'] = $valor;
                 $valor = null;
             }
-            $tablas['Estudiante']['apellido_paterno'] = $valor;
             $tablas['Persona']['apellido_paterno'] = $valor;
         }
         else if ($key === "Segundo Apellido"){
             
             if (!is_string($valor)){
-                $datos_malos['Estudiante']['apellido_materno'] = $valor;
                 $datos_malos['Persona']['apellido_materno'] = $valor;
                 $valor = null;
             }
-            $tablas['Estudiante']['apellido_materno'] = $valor;
             $tablas['Persona']['apellido_materno'] = $valor;
         }
 
@@ -252,7 +258,7 @@ function limpiar_estudiantes($data){
             $tablas['UltimoLogro']['ultimo_logro'] = $valor;
         }
         else if ($key === "Fecha Logro"){
-            if (!es_fecha_valida($valor)){
+            if (!is_string($valor)){
                 $datos_malos['Estudiante']['fecha_logro'] = $valor;
                 $valor = null;
             }
@@ -266,29 +272,29 @@ function limpiar_estudiantes($data){
             $tablas['Estudiante']['ultima_carga'] = $valor;
         }
     }
-    #array_to_csv($datos_malos, "Estudiantes_malos");
+    array_to_csv($datos_malos, "Estudiantes_malos");
     return $tablas;
 }
 
-function limpiar_asignatura($data){
+function limpiar_asignaturas($data){
     $tablas = [
-        'IncluyeCurso' => [],
         'Curso' => [],
-        'CursoPrerequisito' => [],
+        'IncluyeCurso' => [],
+        'CursoPrerequisito' => []
     ];
     $datos_malos = [
-        'IncluyeCurso' => [],
         'Curso' => [],
-        'CursoPrerequisito' => [],
+        'IncluyeCurso' => [],
+        'CursoPrerequisito' => []
     ];
     
     foreach ($data as $key => &$valor) {
-        if ($key === 'Plan'){
+        if (remove_bom($key) === 'Plan'){
             if (!is_string($valor) || strlen($valor) > 30){
                 $datos_malos['IncluyeCurso']['codigo_plan'] = $valor;
                 $valor = null;
             }
-            $tablas['IncluyeCurso']['codigo_plan'] = null;
+            $tablas['IncluyeCurso']['codigo_plan'] = $valor;
         }
         else if ($key === "Asignatura id"){
             if (!is_string($valor) || strlen($valor) > 10){
@@ -296,9 +302,10 @@ function limpiar_asignatura($data){
                 $valor = null;
             }
             $tablas['Curso']['sigla_curso'] = $valor;
+            $tablas['IncluyeCurso']['sigla_curso'] = $valor;
         }
         else if ($key === "Asignatura"){
-            if (!is_str($valor) || strlen($valor) > 100){
+            if (!is_string($valor) || strlen($valor) > 100){
                 $datos_malos['Curso']['nombre_curso'] = $valor;
                 $valor = null;
             }
@@ -314,7 +321,7 @@ function limpiar_asignatura($data){
             $tablas['Curso']['nivel'] = $valor;
         }
         else if ($key === "Prerequisito"){
-            if (gettype($valor) !== CHAR(1)){
+            if (strlen($valor) !== 1){
                 $datos_malos['Curso']['prerequisito'] = $valor;
                 $valor = null;
             }
@@ -330,32 +337,28 @@ function limpiar_planes($data){
     // exequiel
     $tablas = [
         'Facultad' => [],
-        'PlanEstudio' => [],
-        'InscripcionAlumno' => []
+        'PlanEstudio' => []
         ];
 
     $datos_malos = [
         'Facultad' => [],
-        'PlanEstudio' => [],
-        'InscripcionAlumno' => []
+        'PlanEstudio' => []
         ];
 
     foreach ($data as $key => &$valor) {
-        if ($key == 'Código Plan') {
+        if (remove_bom($key) == 'Código Plan') {
             if (!is_string($valor) || empty($valor)) {
                 $datos_malos['PlanEstudio']['codigo_plan'] = $valor;
-                $datos_malos['InscripcionAlumno']['codigo_plan'] = $valor;
                 $valor = NULL;
             }
             $tablas['PlanEstudio']['codigo_plan'] = $valor;
-            $tablas['InscripcionAlumno']['codigo_plan'] = $valor;
         }
         elseif ($key == "Facultad"){
             if (!is_string($valor) || empty($valor)) {
-                $datos_malos['Facultad']['nombre'] = $valor;
+                $datos_malos['Facultad']['nombre_facultad'] = $valor;
                 $valor = NULL;
             }
-            $tablas['Facultad']['nombre'] = $valor;
+            $tablas['Facultad']['nombre_facultad'] = $valor;
         }
         elseif ($key == "Carrera"){
             if (!is_string($valor) || empty($valor)) {
@@ -366,10 +369,10 @@ function limpiar_planes($data){
         }
         elseif ($key == "Plan"){
             if (!is_string($valor) || empty($valor)) {
-                $datos_malos['PlanEstudio']['nombre'] = $valor;
+                $datos_malos['PlanEstudio']['nombre_plan'] = $valor;
                 $valor = NULL;
             }
-            $tablas['PlanEstudio']['nombre'] = $valor;
+            $tablas['PlanEstudio']['nombre_plan'] = $valor;
         }
         elseif ($key == "Jornada"){
             if (!is_string($valor) || empty($valor)) {
@@ -402,7 +405,7 @@ function limpiar_planes($data){
             $tablas['PlanEstudio']['modalidad'] = $valor;
         }
         elseif ($key == "Inicio Vigencia"){
-            if (es_fecha_valida($valor) == false || empty($valor)) {
+            if (!is_string($valor) || empty($valor)) {
                 $datos_malos['PlanEstudio']['inicio'] = $valor;
                 $valor = NULL;
             }
@@ -434,7 +437,7 @@ function limpiar_docentes_planificados($data){
     ];
     
     foreach ($data as $key => &$valor){
-        if ($key === 'RUN') {
+        if (remove_bom($key) === 'RUN') {
             if (!is_numeric($valor)){
                 $datos_malos['Persona']['run'] = $valor;
                 $datos_malos['EmailPersonal']['run'] = $valor;
@@ -449,7 +452,9 @@ function limpiar_docentes_planificados($data){
             $tablas['Persona']['run'] = $valor;
             $tablas['EmailPersonal']['run'] = $valor;
             $tablas['Telefono']['run'] = $valor;
-        }elseif ($key === 'Nombre'){
+        }
+        
+        elseif ($key === 'Nombre'){
             if (!is_string($valor)){
                 $datos_malos['Persona']['nombres'] = $valor;
                 $valor = null;
@@ -586,7 +591,7 @@ function limpiar_notas($data){
         ];
 
     foreach ($data as $key => &$valor){
-        if ($key === "Código Plan"){
+        if (remove_bom($key) === "Código Plan"){
             if (!is_string($valor)){
                 $datos_malos['PlanEstudio']['codigo_plan'] = $valor;
                 $valor = NULL;
@@ -633,11 +638,10 @@ function limpiar_notas($data){
             }
         }
 
-        elseif ($key === "DV"){
-            if ((is_numeric($valor) || strtoupper($valor) === 'K' ) && (gettype($valor) === CHAR(1))) {
+        elseif ($key === "DV") {
+            if ((is_numeric($valor) || strtoupper($valor) === 'K') && strlen($valor) === 1) {
                 $tablas['Persona']['dv'] = $valor;
-            }
-            else{
+            } else {
                 $datos_malos['Persona']['dv'] = $valor;
             }
         }
@@ -754,7 +758,7 @@ function limpiar_planeacion($data){
         
         
         foreach ($data as $key => &$valor) {
-            if ($key === "Periodo"){  
+            if (remove_bom($key) === "Periodo"){  
                 if (!is_string($valor)){
                     $datos_malos['HistorialAcademico']['periodo'] = $valor;
                     $datos_malos['Curso']['periodo'] = $valor;

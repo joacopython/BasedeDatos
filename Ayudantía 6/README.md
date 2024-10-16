@@ -10,7 +10,7 @@ Si aún no tienes un servidor local de PHP instalado, puedes hacerlo de la sigui
 
 - Para **Ubuntu/Debian**:
   ```bash
-  sudo apt install php php-pgsql
+  sudo apt install php php-pgsqlcd 
   ```
 - Para **macOS (usando Homebrew)**:
   ```bash

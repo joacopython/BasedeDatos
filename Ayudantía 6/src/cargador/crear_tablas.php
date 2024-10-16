@@ -27,7 +27,7 @@ createEnumIfNotExists($db, 'estamento_enum', "'Estudiante', 'Académico', 'Admin
 createEnumIfNotExists($db, 'grado_academico_enum', "'Licenciatura', 'Magíster', 'Doctor'");
 createEnumIfNotExists($db, 'jerarquia_academica_enum', "'Asistente', 'Asociado', 'Instructor', 'Titular', 'Sin Jerarquizar', 'Comisión Superior'");
 createEnumIfNotExists($db, 'contrato_enum', "'Full Time', 'Part Time', 'Honorario'");
-createEnumIfNotExists($db, 'modalidad_enum', "'Presencial', 'Online', 'Híbrida'");
+createEnumIfNotExists($db, 'modalidad_enum', "'Presencial', 'OnLine', 'Híbrida'");
 createEnumIfNotExists($db, 'caracter_enum', "'Mínimo', 'Taller', 'Electivo', 'CTI', 'CSI'");
 createEnumIfNotExists($db, 'calificacion_enum', "'SO', 'MB', 'B', 'SU', 'I', 'M', 'MM', 'P', 'NP', 'EX', 'A', 'R'");
 createEnumIfNotExists($db, 'convocatoria_enum', "'ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'");
@@ -36,14 +36,44 @@ $db->commit();
 
 foreach($tablas_iniciales as $tabla => $atributos) {
     try {
-        echo "Creando tabla $tabla...\n";
+        echo "Eliminando tabla $tabla si existe...\n";
         $db->beginTransaction();
+        
+        // Elimina la tabla si existe
+        $dropTableQuery = "DROP TABLE IF EXISTS $tabla CASCADE;";
+        $db->exec($dropTableQuery);
+
+        // Crea la tabla
+        echo "Creando tabla $tabla...\n";
         $createTableQuery = "CREATE TABLE IF NOT EXISTS $tabla ($atributos);";
         $db->exec($createTableQuery);
+
         $db->commit();
     } catch (Exception $e) {
         $db->rollBack();
-        echo "Error al crear la tabla $tabla: " . $e->getMessage();
+        echo "Error al procesar la tabla $tabla: " . $e->getMessage();
+    }
+}
+// la idea seriaas iniciales primero luego las intermedias
+
+foreach($tablas_intermedias as $tabla => $atributos) {
+    try {
+        echo "Eliminando tabla $tabla si existe...\n";
+        $db->beginTransaction();
+        
+        // Elimina la tabla si existe
+        $dropTableQuery = "DROP TABLE IF EXISTS $tabla CASCADE;";
+        $db->exec($dropTableQuery);
+
+        // Crea la tabla
+        echo "Creando tabla $tabla...\n";
+        $createTableQuery = "CREATE TABLE IF NOT EXISTS $tabla ($atributos);";
+        $db->exec($createTableQuery);
+
+        $db->commit();
+    } catch (Exception $e) {
+        $db->rollBack();
+        echo "Error al procesar la tabla intermedia $tabla: " . $e->getMessage();
     }
 }
 ?>

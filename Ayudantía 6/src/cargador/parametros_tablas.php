@@ -1,16 +1,14 @@
 <?php
 
 $path_tablas = array(
-    'estudiantes' => '../data/Estudiantes.csv',
-    'asignaturas' => '../data/Asignaturas.csv',
+    //'estudiantes' => '../data/Estudiantes.csv',
+    'planes' => '../data/Planes.csv',
     'docentes planificados' => '../data/docentes planificados.csv',
+    'asignaturas' => '../data/Asignaturas.csv',
     'notas' => '../data/Notas.csv',
     'planeacion' => '../data/Planeacion.csv',
-    'planes' => '../data/Planes.csv',
     'prerrequisitos' => '../data/prerrequisitos.csv',
 );
-
-
 
 $tablas_iniciales = array(
     'Persona' => 
@@ -41,25 +39,11 @@ $tablas_iniciales = array(
         'run INT,
         cohorte VARCHAR(30),
         numero_estudiante INT,
-        fecha_logro DATE,
-        ultima_carga DATE,
+        fecha_logro VARCHAR(30),
+        ultima_carga VARCHAR(30),
         PRIMARY KEY (numero_estudiante),
         FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE,
         UNIQUE (numero_estudiante)',
-
-    'UltimoLogro' =>
-        'numero_estudiante INT,
-        ultimo_logro VARCHAR(30),
-        periodo VARCHAR(30),
-        PRIMARY KEY(numero_estudiante),
-        FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante)',
-
-    'Bloqueo' =>
-        'numero_estudiante INT,
-        bloqueo BOOLEAN,
-        causal_bloqueo VARCHAR(30),
-        PRIMARY KEY(numero_estudiante),
-        FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante)',
 
     'Profesor' =>
         'run INT,
@@ -100,8 +84,8 @@ $tablas_iniciales = array(
         inicio DATE,
         grado VARCHAR(50),
         sede VARCHAR(30),
-        nombre_facultad VARCHAR(20),
-        nombre_carrera VARCHAR(10),
+        nombre_facultad VARCHAR(100),
+        nombre_carrera VARCHAR(100),
         modalidad modalidad_enum,
         PRIMARY KEY (codigo_plan),
         FOREIGN KEY (nombre_facultad) REFERENCES Facultad(nombre_facultad)',
@@ -116,6 +100,38 @@ $tablas_iniciales = array(
         caracter caracter_enum,
         PRIMARY KEY (sigla_curso)',
 
+    'Facultad' =>
+        'nombre_facultad VARCHAR(100),
+        codigo_departamento INT,
+        PRIMARY KEY (nombre_facultad)',
+    
+    'Departamento' =>
+        'codigo_departamento INT,
+        nombre VARCHAR(30),
+        PRIMARY KEY (codigo_departamento)',
+
+    'Salas' =>
+        'sala VARCHAR(30),
+        vacantes INT,
+        edificio VARCHAR(30),
+        PRIMARY KEY (sala)'
+);
+
+$tablas_intermedias = array(
+    'UltimoLogro' =>
+        'numero_estudiante INT,
+        ultimo_logro VARCHAR(30),
+        periodo VARCHAR(30),
+        PRIMARY KEY(numero_estudiante),
+        FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante)',
+
+    'Bloqueo' =>
+        'numero_estudiante INT,
+        bloqueo BOOLEAN,
+        causal_bloqueo VARCHAR(30),
+        PRIMARY KEY(numero_estudiante),
+        FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante)',
+
     'HistorialAcademico' =>
         'numero_estudiante INT,
         sigla_curso VARCHAR(30),
@@ -128,7 +144,6 @@ $tablas_iniciales = array(
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso) ON DELETE CASCADE,
         FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante) ON DELETE CASCADE',
 
-        
     'OfertaAcademica' =>
         'sigla_curso VARCHAR(30),
         run_profesor INT,
@@ -149,23 +164,7 @@ $tablas_iniciales = array(
         FOREIGN KEY (run_profesor) REFERENCES Profesor(run) ON DELETE CASCADE,
         FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan) ON DELETE CASCADE,
         FOREIGN KEY (sala) REFERENCES Salas(sala) ON DELETE CASCADE',
-        
-    'Facultad' =>
-        'nombre_facultad VARCHAR(20),
-        codigo_departamento INT,
-        PRIMARY KEY (nombre_facultad)',
-    
-    'Departamento' =>
-        'codigo_departamento INT,
-        nombre VARCHAR(30),
-        PRIMARY KEY (codigo_departamento)',
 
-    'Salas' =>
-        'sala VARCHAR(30),
-        vacantes INT,
-        edificio VARCHAR(30),
-        PRIMARY KEY (sala)',
-    
     'IncluyeCurso' =>
         'codigo_plan VARCHAR(30),
         sigla_curso VARCHAR(30),
@@ -194,5 +193,4 @@ $tablas_iniciales = array(
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso),
         FOREIGN KEY (prerequisito) REFERENCES Curso(sigla_curso)'
 );
-
 ?>
