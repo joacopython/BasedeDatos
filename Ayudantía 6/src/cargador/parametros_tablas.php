@@ -106,27 +106,27 @@ $tablas_iniciales = array(
         PRIMARY KEY (codigo_plan),
         FOREIGN KEY (nombre_facultad) REFERENCES Facultad(nombre_facultad)',
 
-'Curso' =>
-    'sigla_curso VARCHAR(10),
-    nombre_curso VARCHAR(100),
-    ciclo VARCHAR(30),
-    nivel INT,
-    secciones INT,
-    prerequisito CHAR(1),
-    caracter caracter_enum,
-    PRIMARY KEY (sigla_curso)',
+    'Curso' =>
+        'sigla_curso VARCHAR(30),
+        nombre_curso VARCHAR(100),
+        ciclo VARCHAR(30),
+        nivel INT,
+        secciones INT,
+        prerequisito CHAR(1),
+        caracter caracter_enum,
+        PRIMARY KEY (sigla_curso)',
 
-'HistorialAcademico' =>
-    'numero_estudiante INT,
-    sigla_curso VARCHAR(10),
-    periodo VARCHAR(30),
-    seccion INT,
-    nota DECIMAL(3, 2),
-    calificacion calificacion_enum, 
-    convocatoria convocatoria_enum, 
-    PRIMARY KEY (numero_estudiante, sigla_curso, seccion),
-    FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante),
-    FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso)',
+    'HistorialAcademico' =>
+        'numero_estudiante INT,
+        sigla_curso VARCHAR(30),
+        periodo VARCHAR(30),
+        seccion INT,
+        nota DECIMAL(3, 2),
+        calificacion calificacion_enum, 
+        convocatoria convocatoria_enum, 
+        PRIMARY KEY (numero_estudiante, sigla_curso, seccion),
+        FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso) ON DELETE CASCADE,
+        FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante) ON DELETE CASCADE',
 
         
     'OfertaAcademica' =>
@@ -181,15 +181,15 @@ $tablas_iniciales = array(
         FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan) ON DELETE CASCADE',
 
     'CursoEquivalente' =>
-        'sigla_curso_2 VARCHAR(10),
-        sigla_curso_1 VARCHAR(10),
+        'sigla_curso_2 VARCHAR(30),
+        sigla_curso_1 VARCHAR(30),
         PRIMARY KEY (sigla_curso_1, sigla_curso_2),
         FOREIGN KEY (sigla_curso_1) REFERENCES Curso(sigla_curso),
         FOREIGN KEY (sigla_curso_2) REFERENCES Curso(sigla_curso)',
 
     'CursoPrerequisito' =>
-        'sigla_curso VARCHAR(10),
-        prerequisito VARCHAR(10),
+        'sigla_curso VARCHAR(30),
+        prerequisito VARCHAR(30),
         PRIMARY KEY (sigla_curso, prerequisito),
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso),
         FOREIGN KEY (prerequisito) REFERENCES Curso(sigla_curso)'
