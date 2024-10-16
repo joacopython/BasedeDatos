@@ -55,7 +55,7 @@ function array_to_csv($array, $file_name) {
     }
 
     // Obtener los encabezados desde la primera fila del array
-    $headers = array_map('trim', array_keys($array[0]));
+    $headers = array_map('trim', array_keys($array));
 
     // Escribir los encabezados en el archivo
     fputcsv($file, $headers, ";");
@@ -272,7 +272,7 @@ function limpiar_estudiantes($data){
             $tablas['Estudiante']['ultima_carga'] = $valor;
         }
     }
-    array_to_csv($datos_malos, "Estudiantes_malos");
+    #array_to_csv($datos_malos, "Estudiantes_malos");
     return $tablas;
 }
 
