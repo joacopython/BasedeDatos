@@ -15,7 +15,7 @@
             $db->exec("CREATE TYPE modalidad_enum AS ENUM ('Presencial', 'Online', 'Híbrida');");
             $db->exec("CREATE TYPE caracter_enum AS ENUM('Mínimo', 'Taller', 'Electivo', 'CTI', 'CSI');");
             $db->exec("CREATE TYPE calificacion_enum AS ENUM ('SO', 'MB', 'B', 'SU', 'I', 'M', 'MM', 'P', 'NP', 'EX', 'A', 'R');");
-            $db->exec("CREATE TYPE convocatoria_enum AS ENUM ('JUL', 'AGO', 'DIC', 'MAR');");
+            $db->exec("CREATE TYPE convocatoria_enum AS ENUM ('ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC');");
     
             $db->commit();
         } catch (Exception $e) {
