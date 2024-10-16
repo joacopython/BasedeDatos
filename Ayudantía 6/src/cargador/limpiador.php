@@ -204,16 +204,10 @@ function limpiar_estudiantes($data){
         }
         else if ($key === "DV"){
             if ((is_numeric($valor) || strtoupper($valor) === 'K' ) && (gettype($valor) === CHAR(1))) {
-                $tablas['Estudiante']['dv'] = $valor;
                 $tablas['Persona']['dv'] = $valor;
-                $tablas['EmailPersonal']['dv'] = $valor;
-                $tablas['Telefono']['dv'] = $valor;
             }
             else{
-                $datos_malos['Estudiante']['dv'] = $valor;
                 $datos_malos['Persona']['dv'] = $valor;
-                $datos_malos['EmailPersonal']['dv'] = $valor;
-                $datos_malos['Telefono']['dv'] = $valor;
             }
         }
 
@@ -337,14 +331,12 @@ function limpiar_planes($data){
     $tablas = [
         'Facultad' => [],
         'PlanEstudio' => [],
-        'Jornada' => [],
         'InscripcionAlumno' => []
         ];
 
     $datos_malos = [
         'Facultad' => [],
         'PlanEstudio' => [],
-        'Jornada' => [],
         'InscripcionAlumno' => []
         ];
 
@@ -383,6 +375,8 @@ function limpiar_planes($data){
             if (!is_string($valor) || empty($valor)) {
                 $datos_malos['Jornada']['jornada_diurna'] = $valor; 
                 $valor = NULL;
+            }else{
+                $valor = strtoupper($valor);
             }
             $tablas['PlanEstudio']['codigo_plan'] = $valor;
         }            
@@ -641,16 +635,10 @@ function limpiar_notas($data){
 
         elseif ($key === "DV"){
             if ((is_numeric($valor) || strtoupper($valor) === 'K' ) && (gettype($valor) === CHAR(1))) {
-                $tablas['Estudiante']['dv'] = $valor;
                 $tablas['Persona']['dv'] = $valor;
-                $tablas['EmailPersonal']['dv'] = $valor;
-                $tablas['Telefono']['dv'] = $valor;
             }
             else{
-                $datos_malos['Estudiante']['dv'] = $valor;
                 $datos_malos['Persona']['dv'] = $valor;
-                $datos_malos['EmailPersonal']['dv'] = $valor;
-                $datos_malos['Telefono']['dv'] = $valor;
             }
         }
          

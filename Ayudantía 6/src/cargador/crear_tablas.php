@@ -1,38 +1,49 @@
 <?php
-    include('../config/conexion.php');
-    require('parametros_tablas.php');
+include('../config/conexion.php');
+require('parametros_tablas.php');
 
-    foreach($tablas_iniciales as $tabla => $atributos) {
-        try {
-            echo "Creando tipos ENUM...\n";
-            $db->beginTransaction();
-    
-            // Definir todos los ENUM que se usarán
-            $db->exec("CREATE TYPE estamento_enum AS ENUM ('Estudiante', 'Académico', 'Administrativo');");
-            $db->exec("CREATE TYPE grado_academico_enum AS ENUM ('Licenciatura', 'Magíster', 'Doctor');");
-            $db->exec("CREATE TYPE jerarquia_academica_enum AS ENUM ('Asistente', 'Asociado', 'Instructor', 'Titular', 'Sin Jerarquizar', 'Comisión Superior');");
-            $db->exec("CREATE TYPE contrato_enum AS ENUM ('Full Time', 'Part Time', 'Honorario');");
-            $db->exec("CREATE TYPE modalidad_enum AS ENUM ('Presencial', 'Online', 'Híbrida');");
-            $db->exec("CREATE TYPE caracter_enum AS ENUM('Mínimo', 'Taller', 'Electivo', 'CTI', 'CSI');");
-            $db->exec("CREATE TYPE calificacion_enum AS ENUM ('SO', 'MB', 'B', 'SU', 'I', 'M', 'MM', 'P', 'NP', 'EX', 'A', 'R');");
-            $db->exec("CREATE TYPE convocatoria_enum AS ENUM ('ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC');");
-    
-            $db->commit();
-        } catch (Exception $e) {
-            $db->rollBack();
-            echo "Error al crear los tipos ENUM: " . $e->getMessage();
+// Función para crear un tipo ENUM solo si no existe
+function createEnumIfNotExists($db, $enumName, $enumValues) {
+    try {
+        // Verificar si el tipo ya existe
+        $query = $db->prepare("SELECT 1 FROM pg_type WHERE typname = :enumName");
+        $query->execute(['enumName' => $enumName]);
+
+        if (!$query->fetch()) {
+            // Crear el tipo ENUM
+            $db->exec("CREATE TYPE $enumName AS ENUM ($enumValues);");
+            echo "Tipo ENUM '$enumName' creado.\n";
+        } else {
+            echo "Tipo ENUM '$enumName' ya existe. Saltando creación.\n";
         }
-        
-        try {
-            echo "Creando tabla $tabla...\n";
-            $db->beginTransaction();
-            $createTableQuery = "CREATE TABLE IF NOT EXISTS $tabla ($atributos);";
-            $db->exec($createTableQuery);
-            $db->commit();
-        } catch (Exception $e) {
-            $db->rollBack();
-            echo "Error al crear la tabla $tabla: " . $e->getMessage();
-        }
+    } catch (Exception $e) {
+        echo "Error al crear el tipo ENUM '$enumName': " . $e->getMessage() . "\n";
     }
+}
 
+// Crear todos los tipos ENUM
+$db->beginTransaction();
+createEnumIfNotExists($db, 'estamento_enum', "'Estudiante', 'Académico', 'Administrativo'");
+createEnumIfNotExists($db, 'grado_academico_enum', "'Licenciatura', 'Magíster', 'Doctor'");
+createEnumIfNotExists($db, 'jerarquia_academica_enum', "'Asistente', 'Asociado', 'Instructor', 'Titular', 'Sin Jerarquizar', 'Comisión Superior'");
+createEnumIfNotExists($db, 'contrato_enum', "'Full Time', 'Part Time', 'Honorario'");
+createEnumIfNotExists($db, 'modalidad_enum', "'Presencial', 'Online', 'Híbrida'");
+createEnumIfNotExists($db, 'caracter_enum', "'Mínimo', 'Taller', 'Electivo', 'CTI', 'CSI'");
+createEnumIfNotExists($db, 'calificacion_enum', "'SO', 'MB', 'B', 'SU', 'I', 'M', 'MM', 'P', 'NP', 'EX', 'A', 'R'");
+createEnumIfNotExists($db, 'convocatoria_enum', "'ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'");
+createEnumIfNotExists($db, 'jornada_enum', "'VESPERTINO', 'DIURNO'");
+$db->commit();
+
+foreach($tablas_iniciales as $tabla => $atributos) {
+    try {
+        echo "Creando tabla $tabla...\n";
+        $db->beginTransaction();
+        $createTableQuery = "CREATE TABLE IF NOT EXISTS $tabla ($atributos);";
+        $db->exec($createTableQuery);
+        $db->commit();
+    } catch (Exception $e) {
+        $db->rollBack();
+        echo "Error al crear la tabla $tabla: " . $e->getMessage();
+    }
+}
 ?>
