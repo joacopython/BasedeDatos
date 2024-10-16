@@ -31,6 +31,4 @@ try {
 } catch (Exception $e) {
     echo "Error al cargar datos: " . $e->getMessage();
 }
-
-
 ?>

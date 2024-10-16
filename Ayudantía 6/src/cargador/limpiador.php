@@ -36,8 +36,19 @@ function typeConvert($valor){
 }
 
 function array_to_csv($array, $file_name) {
+    // Definir el path de la carpeta
+    $directory = 'data_mala/';
+
+    // Asegurarse de que la carpeta existe, si no, crearla
+    if (!is_dir($directory)) {
+        mkdir($directory, 0777, true); // Crea la carpeta si no existe
+    }
+
+    // Crear el path completo del archivo
+    $file_path = $directory . $file_name;
+
     // Abrir el archivo para escritura
-    $file = fopen($file_name, 'w');
+    $file = fopen($file_path, 'w');
 
     if ($file === false) {
         return false; // Error al abrir el archivo
@@ -261,6 +272,7 @@ function limpiar_estudiantes($data){
             $tablas['Estudiante']['ultima_carga'] = $valor;
         }
     }
+    array_to_csv($datos_malos, "Estudiantes_malos");
     return $tablas;
 }
 
@@ -315,6 +327,8 @@ function limpiar_asignatura($data){
             $tablas['Curso']['prerequisito'] = $valor;
         }
     }
+    array_to_csv($datos_malos, "Asigantura_malas");
+    return $tablas;
 }
 
 
@@ -401,6 +415,8 @@ function limpiar_planes($data){
             $tablas['PlanEstudio']['inicio'] = $valor;
         } 
     }
+    array_to_csv($datos_malos, "Planes_malos");
+    return $tablas;
 }
 
 function limpiar_docentes_planificados($data){
@@ -546,6 +562,8 @@ function limpiar_docentes_planificados($data){
             $tablas['Persona']['telefono'] = $valor;
         }
     }
+    array_to_csv($datos_malos, "Docentes_planificados_malos");
+    return $tablas;
 }
 
 
@@ -716,8 +734,10 @@ function limpiar_notas($data){
             }
             $valor = (float) $valor;
             $tablas['HistorialAcademico']['nota'] = $valor;
-        }        
+        }
     }
+    array_to_csv($datos_malos, "Notas_malas");
+    return $tablas;
 }
 
 function limpiar_planeacion($data){
@@ -993,5 +1013,7 @@ function limpiar_planeacion($data){
                 $tablas['Profesor']['jerarquia_academica'] = $valor;
             }
     }
+    array_to_csv($datos_malos, "planeacion_mala");
+    return $tablas;
 }
 ?>
