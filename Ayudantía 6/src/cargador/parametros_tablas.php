@@ -8,6 +8,7 @@ $path_tablas = array(
     'notas' => '../data/Notas.csv',
     'planeacion' => '../data/Planeacion.csv',
     'prerrequisitos' => '../data/prerrequisitos.csv',
+    
 );
 
 $tablas_iniciales = array(
