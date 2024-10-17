@@ -90,7 +90,6 @@
     h.periodo ASC, h.sigla_curso;
   ";
 
-  // Preparar y ejecutar la consulta
   $result = $db->prepare($query);
   $result->bindParam(':numero_estudiante', $numero_estudiante, PDO::PARAM_STR);
   $result->execute();
@@ -131,7 +130,7 @@
               <td>{$dato['ppa']}</td>
               <td>{$dato['estado_estudiante']}</td>
             </tr>";
-    }
+  }
     ?>
   </table>
 </body>

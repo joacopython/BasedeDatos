@@ -11,6 +11,7 @@ $path_tablas = array(
 );
 
 $tablas_iniciales = array(
+    'usuarios' => 'email VARCHAR(255) UNIQUE NOT NULL, password VARCHAR(255) NOT NULL, role VARCHAR(50) NOT NULL',
     'Persona' => 
         'run INT,
         dv CHAR(1),
@@ -195,8 +196,8 @@ $tablas_intermedias = array(
         'sigla_curso VARCHAR(30),
         prerequisito_1 VARCHAR(30),
         prerequisito_2 VARCHAR(30),
-        PRIMARY KEY (sigla_curso, prerequisito_1, prerequisito_2),
+        PRIMARY KEY (sigla_curso, prerequisito_1),
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso),
-        FOREIGN KEY (prerequisito) REFERENCES Curso(sigla_curso)'
+        FOREIGN KEY (prerequisito_1) REFERENCES Curso(sigla_curso)',
 );
 ?>
