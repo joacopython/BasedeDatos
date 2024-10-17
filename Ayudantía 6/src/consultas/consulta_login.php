@@ -10,7 +10,7 @@ $query->bindParam(':email', $email);
 $query->execute();
 $user = $query->fetch();
 
-if ($user && $user['password'] === $password) { // Esta comparación debe ser con password_verify() si la contraseña está hasheada
+if ($user && password_verify($password, $user['password'])) { // Esta comparación debe ser con password_verify() si la contraseña está hasheada
     // Iniciar sesión y establecer el rol
     $_SESSION['user'] = $user['email'];
     $_SESSION['role'] = $user['role'];

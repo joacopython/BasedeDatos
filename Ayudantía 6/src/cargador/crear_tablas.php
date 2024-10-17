@@ -29,7 +29,7 @@ createEnumIfNotExists($db, 'estamento_enum', "'Estudiante', 'Académico', 'Admin
 createEnumIfNotExists($db, 'jerarquia_academica_enum', "'Asistente', 'Asociado', 'Instructor', 'Titular', 'Sin Jerarquizar', 'Comisión Superior'");
 createEnumIfNotExists($db, 'modalidad_enum', "'Presencial', 'OnLine', 'Híbrida'");
 createEnumIfNotExists($db, 'caracter_enum', "'Mínimo', 'Taller', 'Electivo', 'CTI', 'CSI'");
-createEnumIfNotExists($db, 'calificacion_enum', "'SO', 'MB', 'B', 'SU', 'I', 'M', 'MM', 'P', 'NP', 'EX', 'A', 'R', 'CV', 'SD', 'SC', 'ES', 'HO'");
+createEnumIfNotExists($db, 'calificacion_enum', "'SO', 'MB', 'B', 'SU', 'I', 'M', 'MM', 'P', 'NP', 'EX', 'A', 'R', 'CV', 'SD', 'SC', 'ES', 'HO', 'DP'");
 createEnumIfNotExists($db, 'convocatoria_enum', "'ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC', 'VER','ES'");
 createEnumIfNotExists($db, 'jornada_enum', "'VESPERTINO', 'DIURNO'");
 $db->commit();

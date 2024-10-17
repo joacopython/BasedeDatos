@@ -31,10 +31,6 @@ try {
             }
             echo "Terminè el archivo " . $path . "\n";
             fclose($file);
-            
-            if ($path == '../data/Notas.csv'){
-                exit();
-            }
         } else {
             echo "Error al abrir el archivo $path\n";
         }    

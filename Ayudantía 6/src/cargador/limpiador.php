@@ -95,7 +95,7 @@ function tabla_handler($nombre_archivo, $data) {
         $data = limpiar_planes($data);
     } 
     elseif ($nombre_archivo == 'prerrequisitos') {
-        $data = limpiar_prerrequisitos($data);
+        $data = limpiar_prerequisitos($data);
     } else {
         echo "No se encontró la función de limpieza para $nombre_archivo.";
     }
@@ -272,7 +272,6 @@ function limpiar_estudiantes($data){
             $tablas['Estudiante']['ultima_carga'] = $valor;
         }
     }
-    array_to_csv($datos_malos, "Estudiantes_malos");
     return $tablas;
 }
 
@@ -326,7 +325,6 @@ function limpiar_asignaturas($data){
             $tablas['Curso']['prerequisito'] = $valor;
         }
     }
-    array_to_csv($datos_malos, "Asigantura_malas");
     return $tablas;
 }
 
@@ -412,7 +410,6 @@ function limpiar_planes($data){
             $tablas['PlanEstudio']['inicio'] = $valor;
         } 
     }
-    array_to_csv($datos_malos, "Planes_malos");
     return $tablas;
 }
 
@@ -564,7 +561,6 @@ function limpiar_docentes_planificados($data){
             $tablas['Persona']['estamento'] = $valor;
         }
     }
-    array_to_csv($datos_malos, "Docentes_planificados_malos");
     return $tablas;
 }
 
@@ -720,13 +716,12 @@ function limpiar_notas($data){
         elseif ($key === "Nota"){  
             if (!is_numeric($valor)){
                 $datos_malos['HistorialAcademico']['nota'] = $valor;
-                $valor = NULL;
+                $valor = -1;
             }
             $valor = (float) $valor;
             $tablas['HistorialAcademico']['nota'] = $valor;
         }
     }
-    array_to_csv($datos_malos, "Notas_malas");
     return $tablas;
 }
 
@@ -1001,7 +996,6 @@ function limpiar_planeacion($data){
                 $tablas['Profesor']['jerarquia_academica'] = $valor;
             }
     }
-    array_to_csv($datos_malos, "planeacion_mala");
     return $tablas;
 }
 
@@ -1053,7 +1047,7 @@ function limpiar_prerequisitos($data){
             $tablas['Curso']['nivel'] = $valor;
         }
         elseif ($key == "Prerequisito"){
-            if ($contador ===0){ 
+            if ($contador == 0){ 
                 if (!is_string($valor) && !is_numeric($valor)) {
                     $datos_malos['CursoPrerequisito']['prerequisito_1'] = $valor; 
                     $valor = "NULL";

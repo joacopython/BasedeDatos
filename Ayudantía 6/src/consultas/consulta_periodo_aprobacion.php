@@ -4,10 +4,7 @@
   <?php
   require("../config/conexion.php");
 
-  // Obtener el 'periodo' del formulario POST
   $periodo = $_POST["periodo"];
-
-  // Consulta SQL
   $query = "
     WITH Aprobados AS (
       SELECT 

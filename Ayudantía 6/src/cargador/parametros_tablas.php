@@ -1,11 +1,11 @@
 <?php
 
 $path_tablas = array(
-    'estudiantes' => '../data/Estudiantes.csv',
+    'estudiantes' => '../data/Estudiantes_2.csv',
     'planes' => '../data/Planes.csv',
     'docentes planificados' => '../data/docentes planificados.csv',
     'asignaturas' => '../data/Asignaturas.csv',
-    'notas' => '../data/Notas.csv',
+    'notas' => '../data/Notas_2.csv',
     'planeacion' => '../data/Planeacion.csv',
     'prerrequisitos' => '../data/prerrequisitos.csv',
     'usuarios' => '../data/usuarios.csv',
