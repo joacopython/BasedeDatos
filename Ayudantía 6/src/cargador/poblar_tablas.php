@@ -14,8 +14,9 @@ try {
             while (($data = fgetcsv($file, 1000, ';')) !== false) { 
                 // Verificar restricciones antes de insertar
                 for ($i = 0; $i < count($data); $i++) {
-                    $data = remove_bom($data);
+
                     if ($data[$i] == ''){ 
+                        $data[$i] = remove_bom($data[$i]);
                         $data[$i] = Null; // Convertir campos vacíos en NULL, para evitar insertar datos vacíos
                         
                     }
@@ -23,8 +24,6 @@ try {
                 $data = array_combine($header, $data);
                 //tabla esel n
                 $tablas = tabla_handler($tabla_nombre, $data);
-
-                echo "LIMPIE BIEN\n";
                 // Realizar toda corrección necesaria antes de insertar
                 foreach ($tablas as $key => &$valor) {
                     insertar_en_tabla($db, $key, $valor);
@@ -32,6 +31,10 @@ try {
             }
             echo "Terminè el archivo " . $path . "\n";
             fclose($file);
+            
+            if ($path == '../data/Notas.csv'){
+                exit();
+            }
         } else {
             echo "Error al abrir el archivo $path\n";
         }    

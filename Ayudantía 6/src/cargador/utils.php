@@ -31,8 +31,6 @@
             $errorCode = $e->getCode();
             if ($errorCode != 23505) {
                 echo "Error al insertar en la tabla $tabla_nombre: " . $e->getMessage(). "\n";
-                echo "columna= ". $columnas_str . "//valor= " . $placeholders;
-                exit();
             }
         }
     }
