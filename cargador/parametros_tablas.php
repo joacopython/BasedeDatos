@@ -79,7 +79,7 @@ $tablas_iniciales = array(
         'codigo_plan VARCHAR(10),
         nombre_plan VARCHAR(100),
         duracion CHAR(1),
-        inicio DATE,
+        inicio VARCHAR(30),
         grado VARCHAR(50),
         sede VARCHAR(30),
         nombre_facultad VARCHAR(100),
