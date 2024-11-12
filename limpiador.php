@@ -856,7 +856,7 @@ function limpiar_planeacion($data){
                     $valor = NULL;
                 }
                 $tablas['OfertaAcademica']['hora_inicio'] = $valor;
-            } 
+            }
             
             elseif ($key == "Hora Fin"){
                 if (es_hora_valida($valor) == false || empty($valor)) {
@@ -883,9 +883,9 @@ function limpiar_planeacion($data){
             } 
             
             elseif ($key === "Lugar"){
-                if (!is_string($valor) ||){
+                if (!is_string($valor) || empty($valor)) {
                     //$datos_malos['Salas']['sala'] = $valor;
-                    $valor = NULL;
+                    $valor = "POR DEFINIR";
                 }
                 $tablas['Salas']['sala'] = $valor;
             }
