@@ -96,12 +96,22 @@ function tabla_handler($nombre_archivo, $data) {
     } 
     elseif ($nombre_archivo == 'prerrequisitos') {
         $data = limpiar_prerequisitos($data);
+    }
+    elseif ($nombre_archivo == 'usuarios') {
+        $data = limpiar_usuarios($data);
     } else {
         echo "No se encontró la función de limpieza para $nombre_archivo.";
     }
     return $data;
 }
 
+function limpiar_usuarios($data){
+    $tablas = [
+        'usuarios' => []
+    ];
+    $tablas['usuarios'] = $data;
+    return $tablas;
+}
 
 function limpiar_estudiantes($data){
     $tablas = [
@@ -757,7 +767,7 @@ function limpiar_planeacion($data){
             
             elseif ($key == "Sede"){
                 if (!is_string($valor) || empty($valor)) {
-                    $valor = "-1";
+                    $valor = NULL;
                 }
                 $tablas['OfertaAcademica']['sede'] = $valor;
             } 
@@ -788,10 +798,10 @@ function limpiar_planeacion($data){
             }
             
             elseif ($key === "Id Asignatura"){
-                if (!is_string($valor) || empty($valor)){
+                if (!is_string($valor)){
                     //$datos_malos['Curso']['sigla_curso'] = $valor;
                     //$datos_malos['OfertaAcademica']['sigla_curso'] = $valor;
-                    $valor = "-1";
+                    $valor = NULL;
                 }
                 $tablas['Curso']['sigla_curso'] = $valor;
                 $tablas['OfertaAcademica']['sigla_curso'] = $valor;
@@ -829,7 +839,9 @@ function limpiar_planeacion($data){
             elseif ($key === "Cupo"){ // VACANTES SOLO ESTÁ EN SALAS 
                 if (!is_numeric($valor)){
                     //$datos_malos['Salas']['vacantes'] = $valor;
-
+                }
+                if (!$tablas['Salas']['sala']){
+                    
                 }
                 $valor = (int) $valor;
                 $tablas['Salas']['vacantes'] = $valor;
@@ -884,9 +896,9 @@ function limpiar_planeacion($data){
             } 
             
             elseif ($key === "Lugar"){
-                if (!is_string($valor) || empty($valor)){
+                if (!is_string($valor)){
                     //$datos_malos['Salas']['sala'] = $valor;
-                    $valor = "POR DEFINIR";
+                    $valor = NULL;
                 }
                 $tablas['Salas']['sala'] = $valor;
             }
