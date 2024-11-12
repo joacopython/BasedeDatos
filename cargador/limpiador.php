@@ -767,7 +767,7 @@ function limpiar_planeacion($data){
             
             elseif ($key == "Sede"){
                 if (!is_string($valor) || empty($valor)) {
-                    $valor = NULL;
+                    $valor = "-1";
                 }
                 $tablas['OfertaAcademica']['sede'] = $valor;
             } 
@@ -798,10 +798,10 @@ function limpiar_planeacion($data){
             }
             
             elseif ($key === "Id Asignatura"){
-                if (!is_string($valor)){
+                if (!is_string($valor) || empty($valor)){
                     //$datos_malos['Curso']['sigla_curso'] = $valor;
                     //$datos_malos['OfertaAcademica']['sigla_curso'] = $valor;
-                    $valor = NULL;
+                    $valor = "-1";
                 }
                 $tablas['Curso']['sigla_curso'] = $valor;
                 $tablas['OfertaAcademica']['sigla_curso'] = $valor;
@@ -839,9 +839,6 @@ function limpiar_planeacion($data){
             elseif ($key === "Cupo"){ // VACANTES SOLO ESTÁ EN SALAS 
                 if (!is_numeric($valor)){
                     //$datos_malos['Salas']['vacantes'] = $valor;
-                }
-                if (!$tablas['Salas']['sala']){
-                    
                 }
                 $valor = (int) $valor;
                 $tablas['Salas']['vacantes'] = $valor;
@@ -896,9 +893,9 @@ function limpiar_planeacion($data){
             } 
             
             elseif ($key === "Lugar"){
-                if (!is_string($valor)){
+                if (!is_string($valor) || empty($valor)) {
                     //$datos_malos['Salas']['sala'] = $valor;
-                    $valor = NULL;
+                    $valor = "POR DEFINIR";
                 }
                 $tablas['Salas']['sala'] = $valor;
             }
@@ -1022,7 +1019,7 @@ function limpiar_prerequisitos($data){
             $tablas['Curso']['nivel'] = $valor;
         }
 
-        elseif ($key == "Prerequisito") {
+        elseif ($key == "Prerequisitos") {
             if ($contador == 0) { 
                 if (!is_numeric($valor)) {
                     //$datos_malos['CursoPrerequisito']['prerequisito_1'] = $valor; 
