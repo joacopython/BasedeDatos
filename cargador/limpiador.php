@@ -788,10 +788,10 @@ function limpiar_planeacion($data){
             }
             
             elseif ($key === "Id Asignatura"){
-                if (!is_string($valor)){
+                if (!is_string($valor) || empty($valor)){
                     //$datos_malos['Curso']['sigla_curso'] = $valor;
                     //$datos_malos['OfertaAcademica']['sigla_curso'] = $valor;
-                    $valor = NULL;
+                    $valor = "-1";
                 }
                 $tablas['Curso']['sigla_curso'] = $valor;
                 $tablas['OfertaAcademica']['sigla_curso'] = $valor;
