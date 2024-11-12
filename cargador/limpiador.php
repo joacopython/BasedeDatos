@@ -1008,7 +1008,7 @@ function limpiar_prerequisitos($data){
                 //$datos_malos['Curso']['nombre_curso'] = $valor;
                 $valor = "NULL";
             }
-            $tablas['curso']['nombre_curso'] = $valor;
+            $tablas['Curso']['nombre_curso'] = $valor;
         }
         elseif ($key == "Nivel"){
             if (!is_string($valor) || empty($valor)) {
