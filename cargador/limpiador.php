@@ -757,7 +757,7 @@ function limpiar_planeacion($data){
             
             elseif ($key == "Sede"){
                 if (!is_string($valor) || empty($valor)) {
-                    $valor = NULL;
+                    $valor = "-1";
                 }
                 $tablas['OfertaAcademica']['sede'] = $valor;
             } 
