@@ -1021,16 +1021,16 @@ function limpiar_prerequisitos($data){
 
         elseif ($key == "Prerequisitos") {
             if ($contador == 0) { 
-                if (!is_numeric($valor)) {
+                if (!is_numeric($valor) || empty($valor)) {
                     //$datos_malos['CursoPrerequisito']['prerequisito_1'] = $valor; 
-                    $valor = "NULL";
+                    $valor = "-1";
                 }
                 $tablas['CursoPrerequisito']['prerequisito_1'] = $valor;
-                $contador++;
+                $contador ++;
             } else {
-                if (!is_numeric($valor)) {
+                if (!is_numeric($valor) || empty($valor)) {
                     //$datos_malos['CursoPrerequisito']['prerequisito_2'] = $valor; 
-                    $valor = "NULL";
+                    $valor = "-1";
                 }
                 $tablas['CursoPrerequisito']['prerequisito_2'] = $valor;
                 $contador = 0;

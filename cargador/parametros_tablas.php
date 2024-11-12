@@ -203,6 +203,7 @@ $tablas_intermedias = array(
         prerequisito_2 VARCHAR(30),
         PRIMARY KEY (sigla_curso, prerequisito_1),
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso),
-        FOREIGN KEY (prerequisito_1) REFERENCES Curso(sigla_curso)',
+        FOREIGN KEY (prerequisito_1) REFERENCES Curso(sigla_curso),
+        FOREIGN KEY (prerequisito_2) REFERENCES Curso(sigla_curso)',
 );
 ?>
