@@ -4,7 +4,7 @@
 
 function remove_bom($string) {
     if ($string === null){
-        return $null;
+        return $string;
     }
     if (substr($string, 0, 3) === "\xef\xbb\xbf") {
         $string = substr($string, 3);
@@ -974,15 +974,15 @@ function limpiar_planeacion($data){
 function limpiar_prerequisitos($data){
     // exequiel
     $tablas = [
+        'Curso' => [],
         'CursoPrerequisito' => [],
-        'PlanEstudio' => [],
-        'Curso' => []
+        'PlanEstudio' => []
         ];
 
     $datos_malos = [
+        'Curso' => [],
         'CursoPrerequisito' => [],
-        'PlanEstudio' => [],
-        'Curso' => []
+        'PlanEstudio' => []
         ];
     $contador = 0;
     foreach ($data as $key => &$valor) {
@@ -998,16 +998,15 @@ function limpiar_prerequisitos($data){
                 //$datos_malos['PlanEstudio']['sigla_curso'] = $valor;
                 //$datos_malos['CursoPrerequisito']['sigla_curso'] = $valor;
                 //$datos_malos['Curso']['sigla_curso'] = $valor;
-                $valor = "NULL";
+                $valor = "-1";
             }
-            $tablas['PlanEstudio']['sigla_curso'] = $valor;
-            $tablas['CursoPrerequisito']['sigla_curso'] = $valor;
             $tablas['Curso']['sigla_curso'] = $valor;
+            $tablas['CursoPrerequisito']['sigla_curso'] = $valor;
         }
         elseif ($key == "Asignatura"){
             if (!is_string($valor) || empty($valor)) {
                 //$datos_malos['Curso']['nombre_curso'] = $valor;
-                $valor = 'NULL';
+                $valor = "NULL";
             }
             $tablas['curso']['nombre_curso'] = $valor;
         }
@@ -1036,7 +1035,7 @@ function limpiar_prerequisitos($data){
                 $contador = 0;
             }   
         }   
-    return $tablas;
     }
+    return $tablas;
 }
 ?>
