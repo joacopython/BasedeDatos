@@ -830,6 +830,9 @@ function limpiar_planeacion($data){
                 if (!is_numeric($valor)){
                     //$datos_malos['Salas']['vacantes'] = $valor;
                 }
+                if (!$tablas['Salas']['sala']){
+                    
+                }
                 $valor = (int) $valor;
                 $tablas['Salas']['vacantes'] = $valor;
             }
@@ -883,7 +886,7 @@ function limpiar_planeacion($data){
             } 
             
             elseif ($key === "Lugar"){
-                if (!is_string($valor) ||){
+                if (!is_string($valor)){
                     //$datos_malos['Salas']['sala'] = $valor;
                     $valor = NULL;
                 }

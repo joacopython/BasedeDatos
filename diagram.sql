@@ -168,6 +168,7 @@ CREATE TABLE HistorialAcadémico (
 CREATE TABLE OfertaAcademica (
     sigla_curso VARCHAR(30),
     run_profesor INT,
+    sede VARCHAR(30),
     seccion_curso VARCHAR(30),
     periodo VARCHAR(30),
     inscritos INT,
@@ -183,7 +184,6 @@ CREATE TABLE OfertaAcademica (
     PRIMARY KEY (sigla_curso, seccion_curso, codigo_plan),
     FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso) ON DELETE CASCADE,
     FOREIGN KEY (run_profesor) REFERENCES Profesor(run) ON DELETE CASCADE,
-    FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan) ON DELETE CASCADE,
     FOREIGN KEY (sala) REFERENCES Salas(sala) ON DELETE CASCADE
 );
 

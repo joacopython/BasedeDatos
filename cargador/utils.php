@@ -31,6 +31,7 @@
             $errorCode = $e->getCode();
             if ($errorCode != 23505) {
                 echo "Error al insertar en la tabla $tabla_nombre: " . $e->getMessage(). "\n";
+                print_r($atributos_dicc);
             }
         }
     }

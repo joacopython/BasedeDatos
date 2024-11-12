@@ -6,13 +6,14 @@ $path_tablas = array(
     'docentes planificados' => '../data/docentes planificados.csv',
     'asignaturas' => '../data/Asignaturas.csv',
     'notas' => '../data/Notas_2.csv',
-    'planeacion' => '../data/Planeacion.csv',
+    'planeacion' => '../data/Planeación.csv',
     'prerrequisitos' => '../data/prerrequisitos.csv',
     'usuarios' => '../data/usuarios.csv',
 );
 
 $tablas_iniciales = array(
     'usuarios' => 'email VARCHAR(255) UNIQUE NOT NULL, password VARCHAR(255) NOT NULL, role VARCHAR(50) NOT NULL',
+    
     'Persona' => 
         'run INT,
         dv CHAR(1),
@@ -37,16 +38,7 @@ $tablas_iniciales = array(
         PRIMARY KEY(run),
         FOREIGN KEY (run) REFERENCES Persona(run)',    
     
-    'Estudiante' =>
-        'run INT,
-        cohorte VARCHAR(30),
-        numero_estudiante INT,
-        fecha_logro VARCHAR(30),
-        ultima_carga VARCHAR(30),
-        PRIMARY KEY (numero_estudiante),
-        FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE,
-        UNIQUE (numero_estudiante)',
-
+        
     'Profesor' =>
         'run INT,
         dedicacion INT,
@@ -58,14 +50,14 @@ $tablas_iniciales = array(
         cargo TEXT,
         PRIMARY KEY (run),
         FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE',
-
+        
     'Jornada' =>
         'run INT,
         jornada_diurna BOOLEAN,
         jornada_vespertina BOOLEAN,
         PRIMARY KEY (run),
         FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE',
-
+        
     'Administrativo' =>
         'run INT,
         cargo VARCHAR(30),
@@ -74,7 +66,7 @@ $tablas_iniciales = array(
         dedicacion INT,
         PRIMARY KEY (run),
         FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE',
-
+        
     'ExAlumno' =>
         'run INT,
         numero_estudiante VARCHAR(10),
@@ -82,7 +74,7 @@ $tablas_iniciales = array(
         PRIMARY KEY (numero_estudiante),
         FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE,
         UNIQUE (numero_estudiante)',
-
+        
     'PlanEstudio' =>
         'codigo_plan VARCHAR(10),
         nombre_plan VARCHAR(100),
@@ -139,6 +131,16 @@ $tablas_intermedias = array(
         PRIMARY KEY(numero_estudiante),
         FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante)',
 
+    'Estudiante' =>
+        'run INT,
+        cohorte VARCHAR(30),
+        numero_estudiante INT,
+        fecha_logro VARCHAR(30),
+        ultima_carga VARCHAR(30),
+        PRIMARY KEY (numero_estudiante),
+        FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE,
+        UNIQUE (numero_estudiante)',
+            
     'HistorialAcademico' =>
         'numero_estudiante INT,
         sigla_curso VARCHAR(30),
@@ -154,22 +156,24 @@ $tablas_intermedias = array(
     'OfertaAcademica' =>
         'sigla_curso VARCHAR(30),
         run_profesor INT,
+        sede VARCHAR(30),
         seccion_curso VARCHAR(30),
         periodo VARCHAR(30),
+        jornada VARCHAR(30),
         inscritos INT,
         duracion CHAR(1),
         fecha_fin VARCHAR(30),
         fecha_inicio VARCHAR(30),
-        codigo_plan VARCHAR(30),
         hora_inicio VARCHAR(30),
+        nombre_facultad VARCHAR(100),
         dia VARCHAR(30),
         horario_fin VARCHAR(30),
         sala VARCHAR(30),
         profesor_principal BOOLEAN,
-        PRIMARY KEY (sigla_curso, seccion_curso, codigo_plan),
+        PRIMARY KEY (sigla_curso, seccion_curso, sede),
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso) ON DELETE CASCADE,
+        FOREIGN KEY (nombre_facultad) REFERENCES Facultad(nombre_facultad) ON DELETE CASCADE,
         FOREIGN KEY (run_profesor) REFERENCES Profesor(run) ON DELETE CASCADE,
-        FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan) ON DELETE CASCADE,
         FOREIGN KEY (sala) REFERENCES Salas(sala) ON DELETE CASCADE',
 
     'IncluyeCurso' =>
