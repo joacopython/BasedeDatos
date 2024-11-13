@@ -1,0 +1,2 @@
+DELETE FROM PERSONA
+WHERE run = -1;

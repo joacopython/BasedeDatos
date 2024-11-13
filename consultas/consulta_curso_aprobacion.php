@@ -12,7 +12,7 @@
         COUNT(CASE WHEN h.calificacion IN ('SO', 'MB', 'B') THEN 1 END) AS aprobados,
         COUNT(h.numero_estudiante) AS total
       FROM
-        HistorialAcadémico h
+        HistorialAcademico h
       JOIN
         OfertaAcademica o ON h.sigla_curso = o.sigla_curso 
         AND h.periodo = o.periodo 

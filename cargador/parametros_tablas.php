@@ -30,13 +30,13 @@ $tablas_iniciales = array(
         'run INT,
         email_personal TEXT,
         PRIMARY KEY(run),
-        FOREIGN KEY (run) REFERENCES Persona(run)',
+        FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE',
 
     'Telefono' =>
         'run INT,
         telefono VARCHAR(30),
         PRIMARY KEY(run),
-        FOREIGN KEY (run) REFERENCES Persona(run)',    
+        FOREIGN KEY (run) REFERENCES Persona(run) ON DELETE CASCADE',    
     
         
     'Profesor' =>
@@ -87,7 +87,7 @@ $tablas_iniciales = array(
         jornada jornada_enum,
         modalidad modalidad_enum,
         PRIMARY KEY (codigo_plan),
-        FOREIGN KEY (nombre_facultad) REFERENCES Facultad(nombre_facultad)',
+        FOREIGN KEY (nombre_facultad) REFERENCES Facultad(nombre_facultad) ON DELETE CASCADE',
 
     'Curso' =>
         'sigla_curso VARCHAR(30),
@@ -95,7 +95,7 @@ $tablas_iniciales = array(
         ciclo VARCHAR(30),
         nivel INT,
         secciones INT,
-        prerequisito CHAR(1),
+        prerequisito VARCHAR(10),
         caracter caracter_enum,
         PRIMARY KEY (sigla_curso)',
 
@@ -122,14 +122,14 @@ $tablas_intermedias = array(
         ultimo_logro TEXT,
         periodo VARCHAR(30),
         PRIMARY KEY(numero_estudiante),
-        FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante)',
+        FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante) ON DELETE CASCADE',
 
     'Bloqueo' =>
         'numero_estudiante INT,
         bloqueo BOOLEAN,
         causal_bloqueo TEXT,
         PRIMARY KEY(numero_estudiante),
-        FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante)',
+        FOREIGN KEY (numero_estudiante) REFERENCES Estudiante(numero_estudiante) ON DELETE CASCADE',
 
     'Estudiante' =>
         'run INT,
@@ -194,8 +194,8 @@ $tablas_intermedias = array(
         'sigla_curso_2 VARCHAR(30),
         sigla_curso_1 VARCHAR(30),
         PRIMARY KEY (sigla_curso_1, sigla_curso_2),
-        FOREIGN KEY (sigla_curso_1) REFERENCES Curso(sigla_curso),
-        FOREIGN KEY (sigla_curso_2) REFERENCES Curso(sigla_curso)',
+        FOREIGN KEY (sigla_curso_1) REFERENCES Curso(sigla_curso) ON DELETE CASCADE,
+        FOREIGN KEY (sigla_curso_2) REFERENCES Curso(sigla_curso) ON DELETE CASCADE',
 
     'CursoPrerequisito' =>
         'codigo_plan VARCHAR(30),
@@ -205,7 +205,7 @@ $tablas_intermedias = array(
         prerequisito_1 VARCHAR(30),
         prerequisito_2 VARCHAR(30),
         PRIMARY KEY (sigla_curso, codigo_plan),
-        FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso),
-        FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan)'
+        FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso) ON DELETE CASCADE,
+        FOREIGN KEY (codigo_plan) REFERENCES PlanEstudio(codigo_plan) ON DELETE CASCADE'
 );
 ?>

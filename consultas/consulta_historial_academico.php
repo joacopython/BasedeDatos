@@ -22,7 +22,7 @@
         ELSE 'Vigente'
       END AS estado_curso
     FROM 
-      HistorialAcadémico h
+      HistorialAcademico h
     WHERE 
       h.numero_estudiante = :numero_estudiante
   ),
@@ -52,12 +52,12 @@
       CASE 
         WHEN EXISTS (
           SELECT 1 
-          FROM HistorialAcadémico h 
+          FROM HistorialAcademico h 
           WHERE h.numero_estudiante = :numero_estudiante AND h.periodo = '2024-2'
         ) THEN 'Vigente'
         WHEN EXISTS (
           SELECT 1 
-          FROM HistorialAcadémico h 
+          FROM HistorialAcademico h 
           WHERE h.numero_estudiante = :numero_estudiante 
           AND h.calificacion IN ('LICENCIATURA', 'TITULO')
         ) THEN 'De Término'

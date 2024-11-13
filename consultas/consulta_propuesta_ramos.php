@@ -16,7 +16,7 @@
       FROM 
         Estudiante e
       JOIN 
-        HistorialAcadémico h ON e.numero_estudiante = h.numero_estudiante
+        HistorialAcademico h ON e.numero_estudiante = h.numero_estudiante
       WHERE 
         e.numero_estudiante = :numero_estudiante 
         AND h.periodo = '2024-2'
@@ -25,7 +25,7 @@
       SELECT 
         h.sigla_curso
       FROM 
-        HistorialAcadémico h
+        HistorialAcademico h
       WHERE 
         h.numero_estudiante = :numero_estudiante
         AND h.calificacion IN ('SO', 'MB', 'B', 'SU', 'EX', 'A')

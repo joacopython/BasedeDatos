@@ -11,7 +11,7 @@
         h.sigla_curso,
         COUNT(*) AS total_aprobados
       FROM 
-        HistorialAcadémico h
+        HistorialAcademico h
       WHERE 
         h.periodo = '%$periodo%' AND
         h.calificacion IN ('SO', 'MB', 'B', 'SU', 'EX', 'A')
@@ -23,7 +23,7 @@
         h.sigla_curso,
         COUNT(*) AS total_estudiantes
       FROM 
-        HistorialAcadémico h
+        HistorialAcademico h
       WHERE 
         h.periodo = '%$periodo%'
       GROUP BY 

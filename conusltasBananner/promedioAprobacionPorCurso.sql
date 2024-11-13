@@ -3,7 +3,7 @@ WITH Aprobados AS (
     h.sigla_curso,
     COUNT(*) AS total_aprobados
   FROM 
-    HistorialAcadémico h
+    HistorialAcademico h
   WHERE 
     h.sigla_curso = 'CODIGO_CURSO_INGRESADO' AND
     h.calificacion IN ('SO', 'MB', 'B', 'SU', 'EX', 'A')  -- Definir las calificaciones aprobatorias
@@ -15,7 +15,7 @@ TotalEstudiantes AS (
     h.sigla_curso,
     COUNT(*) AS total_estudiantes
   FROM 
-    HistorialAcadémico h
+    HistorialAcademico h
   WHERE 
     h.sigla_curso = 'CODIGO_CURSO_INGRESADO'
   GROUP BY 

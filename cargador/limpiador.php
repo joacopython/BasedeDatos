@@ -105,14 +105,23 @@ function tabla_handler($nombre_archivo, $data) {
     return $data;
 }
 
-function limpiar_usuarios($data){
+function limpiar_usuarios($data) {
     $tablas = [
         'usuarios' => []
     ];
-    $tablas['usuarios'] = $data;
+
+    foreach ($data as $key => $valor) {
+        if ($key === "password") {
+            // Hash the password
+            $tablas['usuarios']['password'] = password_hash($valor, PASSWORD_DEFAULT);
+        } else {
+            // Add other fields as they are
+            $tablas['usuarios'][$key] = $valor;
+        }
+    }
+    
     return $tablas;
 }
-
 function limpiar_estudiantes($data){
     $tablas = [
         'Persona' => [],
@@ -140,7 +149,7 @@ function limpiar_estudiantes($data){
             if (!is_string($valor)){
                 //$datos_malos['PlanEstudio']['codigo_plan'] = $valor;
                 //$datos_malos['InscripcionAlumno']['codigo_plan'] = $valor;
-                $valor = null;
+                $valor = 'NULL';
             }
             $tablas['PlanEstudio']['codigo_plan'] = $valor;
             $tablas['InscripcionAlumno']['codigo_plan'] = $valor;
@@ -183,19 +192,15 @@ function limpiar_estudiantes($data){
 
         else if ($key === "RUN"){
             if (!is_numeric($valor)){
-                //pasar a datos malos
-                //$datos_malos['Persona']['run'] = $valor;
-                //$datos_malos['Estudiante']['run'] = $valor;
-                //$datos_malos['EmailPersonal']['run'] = $valor;
-                //$datos_malos['Telefono']['run'] = $valor;
+                $valor = -1;
             }
             elseif (is_numeric($valor)){
                 $valor = (int)$valor;
-                $tablas['Persona']['run'] = $valor;
-                $tablas['Estudiante']['run'] = $valor;
-                $tablas['EmailPersonal']['run'] = $valor;
-                $tablas['Telefono']['run'] = $valor;
             }
+            $tablas['Persona']['run'] = $valor;
+            $tablas['Estudiante']['run'] = $valor;
+            $tablas['EmailPersonal']['run'] = $valor;
+            $tablas['Telefono']['run'] = $valor;
         }
         else if ($key === "Número de alumno"){
             if ($valor === NULL){
@@ -299,14 +304,14 @@ function limpiar_asignaturas($data){
         if (remove_bom($key) === 'Plan'){
             if (!is_string($valor) || strlen($valor) > 30){
                 //$datos_malos['IncluyeCurso']['codigo_plan'] = $valor;
-                $valor = null;
+                $valor = 'NULL';
             }
             $tablas['IncluyeCurso']['codigo_plan'] = $valor;
         }
         else if ($key === "Asignatura id"){
             if (!is_string($valor) || strlen($valor) > 10){
                 //$datos_malos['Curso']['sigla_curso'] = $valor;
-                $valor = null;
+                $valor = '-1';
             }
             $tablas['Curso']['sigla_curso'] = $valor;
             $tablas['IncluyeCurso']['sigla_curso'] = $valor;
@@ -314,14 +319,14 @@ function limpiar_asignaturas($data){
         else if ($key === "Asignatura"){
             if (!is_string($valor) || strlen($valor) > 100){
                 //$datos_malos['Curso']['nombre_curso'] = $valor;
-                $valor = null;
+                $valor = '-1';
             }
             $tablas['Curso']['nombre_curso'] = $valor;
         }
         else if ($key === "Nivel"){
             if (!is_numeric($valor)){
                 //$datos_malos['Curso']['nivel'] = $valor;
-                $valor = null;
+                $valor = -1;
             }else{
                 $valor = (int)$valor;
             }
@@ -330,7 +335,7 @@ function limpiar_asignaturas($data){
         else if ($key === "Prerequisito"){
             if (strlen($valor) !== 1){
                 //$datos_malos['Curso']['prerequisito'] = $valor;
-                $valor = null;
+                $valor = '-1';
             }
             $tablas['Curso']['prerequisito'] = $valor;
         }
@@ -450,7 +455,7 @@ function limpiar_docentes_planificados($data){
                 //$datos_malos['Jornada']['run'] = $valor;
                 //$datos_malos['Telefono']['run'] = $valor;
                 //$datos_malos['Administrativo']['run'] = $valor;
-                $valor = 0;
+                $valor = -1;
             }else{
                 $valor = (int)$valor;
                 $valor = trim($valor);
@@ -601,7 +606,7 @@ function limpiar_notas($data){
         if (remove_bom($key) === "Código Plan"){
             if (!is_string($valor)){
                 //$datos_malos['PlanEstudio']['codigo_plan'] = $valor;
-                $valor = NULL;
+                $valor = 'NULL';
             }  // las primary key malas no deberian agregarse a $tablas vdd?
             $tablas['PlanEstudio']['codigo_plan'] = $valor;
         }
@@ -701,7 +706,7 @@ function limpiar_notas($data){
             if (!is_string($valor)){
                 //$datos_malos['HistorialAcademico']['sigla_curso'] = $valor;
                 //$datos_malos['Curso']['sigla_curso'] = $valor;
-                $valor = NULL;
+                $valor = '-1';
             }
             $tablas['HistorialAcademico']['sigla_curso'] = $valor;
             $tablas['Curso']['sigla_curso'] = $valor;
@@ -775,7 +780,7 @@ function limpiar_planeacion($data){
             elseif ($key === "Facultad"){
                 if (!is_string($valor) || empty($valor)) {
                     //$datos_malos['OfertaAcademica']['nombre_facultad'] = $valor;
-                    $valor = NULL;
+                    $valor = 'NULL';
                 }
                 $tablas['OfertaAcademica']['nombre_facultad'] = $valor;
             }
@@ -783,7 +788,7 @@ function limpiar_planeacion($data){
             elseif ($key === "Código Depto"){
                 if (!is_numeric($valor)){
                     //$datos_malos['Departamento']['codigo_departamento'] = $valor;
-                    $valor = NULL;
+                    $valor = -1;
                 }
                 $valor = (int) $valor;
                 $tablas['Departamento']['codigo_departamento'] = $valor;

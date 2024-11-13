@@ -152,7 +152,7 @@ CREATE TABLE Bloqueo(
 );
 
 
-CREATE TABLE HistorialAcadémico (
+CREATE TABLE HistorialAcademico (
     numero_estudiante INT,
     sigla_curso VARCHAR(30),
     periodo VARCHAR(30), 
