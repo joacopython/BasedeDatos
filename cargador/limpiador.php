@@ -922,11 +922,6 @@ function limpiar_planeacion($data){
                 }
                 if (!is_numeric($valor)){
                     $valor = -1;
-                    //$datos_malos['Profesor']['run'] = $valor;
-                    //$datos_malos['Persona']['run'] = $valor;
-                    //$datos_malos['EmailPersonal']['run'] = $valor;
-                    //$datos_malos['Telefono']['run'] = $valor;
-                    //$datos_malos['Administrativo']['run'] = $valor;
                 }
                 $valor = (int)$valor;
                 $tablas['Persona']['run'] = $valor;
@@ -974,15 +969,11 @@ function limpiar_planeacion($data){
 function limpiar_prerequisitos($data){
     // exequiel
     $tablas = [
-        'Curso' => [],
-        'CursoPrerequisito' => [],
-        'PlanEstudio' => []
+        'CursoPrerequisito' => []
         ];
 
     $datos_malos = [
-        'Curso' => [],
-        'CursoPrerequisito' => [],
-        'PlanEstudio' => []
+        'CursoPrerequisito' => []
         ];
     $contador = 0;
     foreach ($data as $key => &$valor) {
@@ -991,7 +982,7 @@ function limpiar_prerequisitos($data){
                 //$datos_malos['PlanEstudio']['codigo_plan'] = $valor;
                 $valor = "NULL";
             }
-            $tablas['PlanEstudio']['codigo_plan'] = $valor;
+            $tablas['CursoPrerequisito']['codigo_plan'] = $valor;
         }
         elseif ($key == "Asignatura id"){
             if (!is_string($valor) || empty($valor)) {
@@ -1000,7 +991,6 @@ function limpiar_prerequisitos($data){
                 //$datos_malos['Curso']['sigla_curso'] = $valor;
                 $valor = "-1";
             }
-            $tablas['Curso']['sigla_curso'] = $valor;
             $tablas['CursoPrerequisito']['sigla_curso'] = $valor;
         }
         elseif ($key == "Asignatura"){
@@ -1008,14 +998,14 @@ function limpiar_prerequisitos($data){
                 //$datos_malos['Curso']['nombre_curso'] = $valor;
                 $valor = "NULL";
             }
-            $tablas['Curso']['nombre_curso'] = $valor;
+            $tablas['CursoPrerequisito']['nombre_curso'] = $valor;
         }
         elseif ($key == "Nivel"){
             if (!is_string($valor) || empty($valor)) {
                 //$datos_malos['Curso']['nivel'] = $valor;
                 $valor = NULL;
             }
-            $tablas['Curso']['nivel'] = $valor;
+            $tablas['CursoPrerequisito']['nivel'] = (int)$valor;
         }
 
         elseif ($key == "Prerequisitos") {
