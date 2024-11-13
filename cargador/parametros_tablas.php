@@ -200,10 +200,8 @@ $tablas_intermedias = array(
     'CursoPrerequisito' =>
         'sigla_curso VARCHAR(30),
         prerequisito_1 VARCHAR(30),
-        prerequisito_2 VARCHAR(30),
         PRIMARY KEY (sigla_curso, prerequisito_1),
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso),
-        FOREIGN KEY (prerequisito_1) REFERENCES Curso(prerequisito),
-        FOREIGN KEY (prerequisito_2) REFERENCES Curso(sigla_curso)',
+        FOREIGN KEY (prerequisito_1) REFERENCES Curso(prerequisito)',
 );
 ?>
