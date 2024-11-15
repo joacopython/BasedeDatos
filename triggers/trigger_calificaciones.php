@@ -24,8 +24,6 @@ try {
                 NEW.calificacion := 'M';  -- Malo
             ELSIF NEW.nota BETWEEN 1.0 AND 1.9 THEN
                 NEW.calificacion := 'MM'; -- Muy Malo
-            ELSE
-                RAISE EXCEPTION 'Nota fuera de rango: %', NEW.nota;
             END IF;
             RETURN NEW;
         END;
