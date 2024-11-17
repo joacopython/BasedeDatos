@@ -2,10 +2,8 @@
 include('../config/conexion.php');
 
 try {
-    // Iniciar una transacción
     $db->beginTransaction();
 
-    // Crear la función del trigger solo si no existe
     $crearFuncionTrigger = "
         CREATE OR REPLACE FUNCTION calcular_calificacion()
         RETURNS TRIGGER AS $$
@@ -32,7 +30,6 @@ try {
     $db->exec($crearFuncionTrigger);
     echo "Función del trigger creada exitosamente.\n";
 
-    // Crear el trigger solo si no existe
     $crearTrigger = "
         CREATE TRIGGER trigger_calcular_calificacion
         BEFORE INSERT ON HistorialAcademico
@@ -42,7 +39,6 @@ try {
     $db->exec($crearTrigger);
     echo "Trigger para calcular calificación creado exitosamente.\n";
 
-    // Confirmar la transacción
     $db->commit();
 } catch (Exception $e) {
     $db->rollBack();
