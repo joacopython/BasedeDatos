@@ -9,7 +9,10 @@ try {
         throw new Exception("No se puede leer el archivo CSV.\n");
     }
 
-    $data = array_map('str_getcsv', file($file));
+    $data = array_map(function($line) {
+        return str_getcsv($line, ';');
+    }, file($file));
+    
     $encabezados = array_shift($data);
     $errores = [];
 
@@ -27,16 +30,21 @@ try {
 
 
     $stmt = $db->prepare("
-        INSERT INTO acta (numero_estudiante, sigla_curso, periodo, seccion, nota)
+        INSERT INTO acta (numero_estudiante, sigla_curso, periodo, seccion, calificacion, nota)
         VALUES (:numero_estudiante, :sigla_curso, :periodo, :seccion, :calificacion, :nota)
     ");
-
     foreach ($data as $index => $row) {
-        [$numero_estudiante, $run, $asignatura, $seccion, $periodo, $nota_dic, $nota_mar] = $row;
+        $numero_estudiante = $row[0];
+        $run = $row[1];
+        $asignatura = $row[2];
+        $seccion = $row[3];
+        $periodo = $row[4];
+        $nota_dic = $row[5];
+        $nota_mar = $row[6];
         
         $calificacion;
         if($nota_dic == "P"){
-          $nota = null;
+          $nota = NULL;
           $calificacion = 'P';
         }
         
@@ -49,16 +57,38 @@ try {
                         $calificacion = 'R';
                     }
                 }else{
-                    $nota = null;
+                    $nota = NULL;
                     $calificacion = 'R';
                 }
             }
-        }else{
-            $nota = null;
+        }elseif(!empty($nota_mar)){
+            $nota = (float)str_replace(',', '.', $nota_mar);
+            if ($nota < 4.0){
+                if (!empty($nota_mar)){
+                    $nota = (float)str_replace(',', '.', $nota_mar);
+                    if ($nota < 4.0){
+                        $calificacion = 'R';
+                    }
+                    else{
+                        $calificacion = 'A';
+                    }
+                }
+                else
+                {
+                    $nota = NULL;
+                    $calificacion = 'R';
+                }
+            }
+        }
+        else{
+            $nota = 'null';
             $calificacion = 'NP';
         }
         
-        if (!is_numeric($nota) || $nota < 0 || $nota > 7) {
+        if ((!is_numeric($nota) && !empty($nota)) || $nota < 0 || $nota > 7) {
+            if (empty($numero_estudiante)){
+                continue;
+            }
             $errores[] = "Nota del número de alumno $numero_estudiante contiene un valor erróneo ($nota).";
             continue;
         }
@@ -72,7 +102,6 @@ try {
             ':nota' => $nota
         ]);
     }
-
     if (!empty($errores)) {
         $db->rollBack();
         foreach ($errores as $error) {
@@ -81,52 +110,59 @@ try {
         exit("Corrija los errores y vuelva a intentar.\n");
     }
     $db->commit();
-    echo "Datos insertados correctamente en la tabla temporal.";
+    echo "Datos insertados correctamente en la tabla temporal.\n";
 
-        
     $crearVistaActaNotas = "
     CREATE OR REPLACE VIEW ActaNotas AS
     SELECT 
         a.numero_estudiante,
-        e.nombre AS nombre_estudiante,
+        per.nombres AS nombre_estudiante,
         a.sigla_curso,
-        c.nombre AS nombre_curso,
+        c.nombre_curso AS nombre_curso,
         a.periodo,
-        p.nombre AS nombre_profesor,
-        ROUND(a.nota, 2) AS nota_final
+        profPersona.nombres AS nombre_profesor,
+        ROUND(a.nota, 2) AS nota_final -- Nota redondeada a 2 decimales
     FROM 
         acta a
     JOIN Estudiante e ON a.numero_estudiante = e.numero_estudiante
-    JOIN Curso c ON a.sigla_curso = c.sigla_curso
-    JOIN Profesor p ON c.run_profesor = p.run;
-";
-$db->exec($crearVistaActaNotas);
-echo "Vista 'ActaNotas' creada exitosamente.\n";
+    JOIN Persona per ON e.run = per.run -- Relación Estudiante -> Persona para obtener el nombre del estudiante
+    JOIN OfertaAcademica oa ON a.sigla_curso = oa.sigla_curso -- Relación acta -> OfertaAcademica
+    JOIN Curso c ON oa.sigla_curso = c.sigla_curso -- Relación OfertaAcademica -> Curso
+    JOIN Profesor prof ON oa.run_profesor = prof.run -- Relación OfertaAcademica -> Profesor
+    JOIN Persona profPersona ON prof.run = profPersona.run; -- Relación Profesor -> Persona para obtener el nombre del profesor
+    ";
+    
+    $db->exec($crearVistaActaNotas);
+    
 
-// Confirmar la transacción
-$db->commit();
+    echo "Vista 'ActaNotas' creada exitosamente.\n";
 
-// Consultar y mostrar la vista
-$consultaVista = "SELECT * FROM ActaNotas;";
-$resultadoVista = $db->query($consultaVista);
+    // Consultar y mostrar la vista
+    $consultaVista = "SELECT * FROM ActaNotas;";
+    $resultadoVista = $db->query($consultaVista);
 
-echo "<h1>Acta de Notas</h1>";
-echo "<table border='1'>";
-echo "<tr><th>Número Estudiante</th><th>Nombre Estudiante</th><th>Curso</th><th>Nombre Curso</th><th>Periodo</th><th>Nombre Profesor</th><th>Nota Final</th></tr>";
+    echo $resultadoVista;
 
-foreach ($resultadoVista as $fila) {
-    echo "<tr>";
-    echo "<td>" . $fila['numero_estudiante'] . "</td>";
-    echo "<td>" . $fila['nombre_estudiante'] . "</td>";
-    echo "<td>" . $fila['sigla_curso'] . "</td>";
-    echo "<td>" . $fila['nombre_curso'] . "</td>";
-    echo "<td>" . $fila['periodo'] . "</td>";
-    echo "<td>" . $fila['nombre_profesor'] . "</td>";
-    echo "<td>" . $fila['nota_final'] . "</td>";
-    echo "</tr>";
-}
-echo "</table>";
-} catch (Exception $e) {
+    echo "<h1>Acta de Notas</h1>";
+    echo "<table border='1'>";
+    echo "<tr><th>Número Estudiante</th><th>Nombre Estudiante</th><th>Curso</th><th>Nombre Curso</th><th>Periodo</th><th>Nombre Profesor</th><th>Nota Final</th></tr>";
+
+    foreach ($resultadoVista as $fila) {
+        echo "Estoy acá\n";
+        echo "<tr>";
+        echo "<td>" . htmlspecialchars($fila['numero_estudiante']) . "</td>";
+        echo "<td>" . htmlspecialchars($fila['nombre_estudiante']) . "</td>";
+        echo "<td>" . htmlspecialchars($fila['sigla_curso']) . "</td>";
+        echo "<td>" . htmlspecialchars($fila['nombre_curso']) . "</td>";
+        echo "<td>" . htmlspecialchars($fila['periodo']) . "</td>";
+        echo "<td>" . htmlspecialchars($fila['nombre_profesor']) . "</td>";
+        echo "<td>" . htmlspecialchars($fila['nota_final']) . "</td>";
+        echo "</tr>";
+    }
+    echo "Termine acá\n";
+    echo "</table>";
+
+}catch (Exception $e) {
     if ($db->inTransaction()) {
         $db->rollBack();
     }

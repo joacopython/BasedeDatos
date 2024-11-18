@@ -9,7 +9,7 @@ try {
     foreach ($path_tablas as $tabla_nombre => $path) {
         $file = fopen($path, 'r');
         if ($file) {
-            $encabezados = fgetcsv($file, 1000,";"); // Saltar la primera línea //aweonmao
+            $header = fgetcsv($file, 1000,";"); // Saltar la primera línea //aweonmao
             while (($data = fgetcsv($file, 1000, ';')) !== false) { 
                 // Verificar restricciones antes de insertar
                 for ($i = 0; $i < count($data); $i++) {
@@ -20,7 +20,7 @@ try {
                         
                     }
                 }
-                $data = array_combine($encabezados, $data);
+                $data = array_combine($header, $data);
                 //tabla esel n
                 $tablas = tabla_handler($tabla_nombre, $data);
                 // Realizar toda corrección necesaria antes de insertar
@@ -53,9 +53,6 @@ try {
     $atributo = 'codigo_departamento';
     $db->exec("DELETE FROM Departamento WHERE $atributo = -1;");
     echo $atributo." nulos eliminados.\n";
-    echo 'Eliminando Tabla Profesor....'."\n";
-    $db->exec("DROP TABLE Profesor");
-    echo 'Tabla Profesor eliminada'. "\n";
 } 
 catch (Exception $e) {
     echo "Error al cargar datos: " . $e->getMessage();

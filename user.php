@@ -64,6 +64,36 @@ include('templates/header.html');
   <br>
 
 
+  <p class="prompt">Acta de Notas 2024</p>
+  <form class="form" action="Entrega3/transaccion.php" method="post">
+    <br>
+    <input class="form-button" type="submit" value="Buscar">
+  </form>
+  <br>
+  <br>
+
+
+  <p class="prompt">Consulta Maestra:</p>
+  <form class="form" action="Entrega3/consulta_maestra.php" method="post">
+    <label for="attributes">Atributos:</label>
+    <input class="form-input" id="attributes" name="attributes" type="text" required placeholder="Ingresa los atributos (ej: nombre, edad)">
+    <br><br>
+
+    <label for="table">Tabla:</label>
+    <input class="form-input" id="table" name="table" type="text" required placeholder="Ingresa el nombre de la tabla (ej: artista)">
+    <br><br>
+
+    <label for="condition">Condición:</label>
+    <input class="form-input" id="condition" name="condition" type="text" required placeholder="Ingresa la condición (ej: edad > 30)">
+    <br><br>
+
+    <input class="form-button" type="submit" value="Buscar">
+  </form>
+  <br>
+  <br>
+
+
+
   <form method="POST" action="consultas/logout.php">
     <button type="submit" class="form-button">Volver a Iniciar Sesión</button>
   </form>
