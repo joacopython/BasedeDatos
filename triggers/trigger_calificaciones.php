@@ -30,12 +30,19 @@ try {
     $db->exec($crearFuncionTrigger);
     echo "Función del trigger creada exitosamente.\n";
 
+    $dropTrigger = "
+    DROP TRIGGER IF EXISTS trigger_calcular_calificacion ON HistorialAcademico;
+    ";
+    $db->exec($dropTrigger);
+
+
     $crearTrigger = "
         CREATE TRIGGER trigger_calcular_calificacion
         BEFORE INSERT ON HistorialAcademico
         FOR EACH ROW
         EXECUTE FUNCTION calcular_calificacion();
     ";
+
     $db->exec($crearTrigger);
     echo "Trigger para calcular calificación creado exitosamente.\n";
 
