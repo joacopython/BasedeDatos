@@ -49,4 +49,23 @@ try {
     $db->exec("DROP TABLE Profesor;");
     die("Error durante el proceso: " . $e->getMessage());
 }
+
+
+try {
+    $transfer_query = "
+        INSERT INTO Persona (run, nombres, apellido_paterno, apellido_materno, email_institucional)
+        SELECT 
+            run, 
+            nombre AS nombres, 
+            apellido1 AS apellido_paterno, 
+            apellido2 AS apellido_materno, 
+            email_institucional
+        FROM Profesor;
+    ";
+
+    $db->exec($transfer_query);
+    echo "Los datos han sido transferidos exitosamente de Profesor a Persona.";
+} catch (PDOException $e) {
+    die("Error durante la transferencia: " . $e->getMessage());
+}
 ?>

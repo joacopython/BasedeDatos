@@ -7,9 +7,11 @@ require('limpiador.php');
 try {
     echo "INICIO DE INSERCIÓN DE DATOS\n";
     foreach ($path_tablas as $tabla_nombre => $path) {
+
+
         $file = fopen($path, 'r');
         if ($file) {
-            $header = fgetcsv($file, 1000,";"); // Saltar la primera línea //aweonmao
+            $header = fgetcsv($file, 1000,";"); // Saltar la primera línea
             while (($data = fgetcsv($file, 1000, ';')) !== false) { 
                 // Verificar restricciones antes de insertar
                 for ($i = 0; $i < count($data); $i++) {
@@ -21,9 +23,10 @@ try {
                     }
                 }
                 $data = array_combine($header, $data);
-                //tabla esel n
                 $tablas = tabla_handler($tabla_nombre, $data);
-                // Realizar toda corrección necesaria antes de insertar
+                
+
+
                 foreach ($tablas as $key => &$valor) {
                     insertar_en_tabla($db, $key, $valor);
                 }
