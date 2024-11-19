@@ -747,6 +747,7 @@ function limpiar_planeacion($data){
             'Curso' => [],
             'Departamento' => [],
             'Salas' => [],
+            'Facultad' =>[],
             'OfertaAcademica' => []
         ];
         
@@ -755,6 +756,7 @@ function limpiar_planeacion($data){
             'Curso' => [],
             'Departamento' => [],
             'Salas' => [],
+            'Facultad' =>[],
             'OfertaAcademica' => []
         ];
         
@@ -777,11 +779,12 @@ function limpiar_planeacion($data){
                 $tablas['OfertaAcademica']['sede'] = $valor;
             } 
             
-            elseif ($key === "Facultad"){
+            elseif ($key == "Facultad  "){
                 if (!is_string($valor) || empty($valor)) {
                     //$datos_malos['OfertaAcademica']['nombre_facultad'] = $valor;
                     $valor = 'NULL';
                 }
+                $tablas['Facultad']['nombre_facultad'] = $valor;
                 $tablas['OfertaAcademica']['nombre_facultad'] = $valor;
             }
             
@@ -791,6 +794,7 @@ function limpiar_planeacion($data){
                     $valor = -1;
                 }
                 $valor = (int) $valor;
+                $tablas['Facultad']['codigo_departamento'] = $valor;
                 $tablas['Departamento']['codigo_departamento'] = $valor;
             }
             
@@ -935,7 +939,7 @@ function limpiar_planeacion($data){
                 $tablas['Telefono']['run'] = $valor;
                 $tablas['Administrativo']['run'] = $valor;
             }
-            
+            /*
             elseif ($key === "Nombre Docente"){
                 if (!is_string($valor)){
                     //$datos_malos['Persona']['nombres'] = $valor;
@@ -967,6 +971,7 @@ function limpiar_planeacion($data){
                 }
                 $tablas['Profesor']['jerarquia_academica'] = $valor;
             }
+            */
     }
     return $tablas;
 }

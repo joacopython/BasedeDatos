@@ -41,12 +41,28 @@ try {
     }
 
 } catch (PDOException $e) {
-    echo "Error en la consulta: " . $e->getMessage();
+    // Verifica el código de error SQLSTATE
+    $errorCode = $e->getCode();
+    switch ($errorCode) {
+        case '42P01': // Tabla no existe
+            echo "<p>Error: La tabla especificada no existe.</p>";
+            break;
+        case '42703': // Columna no existe
+            echo "<p>Error: Uno o más atributos especificados no existen en la tabla.</p>";
+            break;
+        case '42601': // Error de sintaxis SQL
+            echo "<p>Error de sintaxis en la consulta SQL.</p>";
+            break;
+        default: // Otros errores
+            echo "<p>Error en la consulta: " . $e->getMessage() . "</p>";
+            break;
+    }
 } catch (Exception $e) {
+    echo "<p>Ocurrió un error inesperado: " . $e->getMessage() . "</p>";
+}catch (Exception $e) {
     echo "Ocurrió un error inesperado: " . $e->getMessage();
 }
 
+include('../templates/footer_admin.html');
 ?>
-
-<?php include('../templates/footer_admin.html'); ?>
 

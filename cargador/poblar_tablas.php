@@ -28,32 +28,15 @@ try {
                     insertar_en_tabla($db, $key, $valor);
                 }
             }
-            echo "Terminè el archivo " . $path . "\n";
+            echo "Terminé el archivo " . $path . "\n";
             fclose($file);
 
         } else {
             echo "Error al abrir el archivo $path\n";
         }    
-    } 
-    $atributo = 'run';
-    $db->exec("DELETE FROM Persona WHERE $atributo = -1;");
-    echo $atributo." nulos eliminados.\n";
-    $atributo = 'numero_estudiante';
-    $db->exec("DELETE FROM Estudiante WHERE $atributo = -1;");
-    echo $atributo." nulos eliminados.\n";
-    $atributo = 'codigo_plan';
-    $db->exec("DELETE FROM PlanEstudio WHERE $atributo = 'NULL';");
-    echo $atributo." nulos eliminados.\n";
-    $atributo = 'sigla_curso';
-    $db->exec("DELETE FROM Curso WHERE $atributo = '-1';");
-    echo $atributo." nulos eliminados.\n";
-    $atributo = 'nombre_facultad';
-    $db->exec("DELETE FROM Facultad WHERE $atributo = 'NULL';");
-    echo $atributo." nulos eliminados.\n";
-    $atributo = 'codigo_departamento';
-    $db->exec("DELETE FROM Departamento WHERE $atributo = -1;");
-    echo $atributo." nulos eliminados.\n";
-} 
+    }
+
+}
 catch (Exception $e) {
     echo "Error al cargar datos: " . $e->getMessage();
 }

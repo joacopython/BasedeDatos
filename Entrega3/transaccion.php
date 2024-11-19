@@ -141,14 +141,11 @@ try {
     $consultaVista = "SELECT * FROM ActaNotas;";
     $resultadoVista = $db->query($consultaVista);
 
-    echo $resultadoVista;
-
     echo "<h1>Acta de Notas</h1>";
     echo "<table border='1'>";
     echo "<tr><th>Número Estudiante</th><th>Nombre Estudiante</th><th>Curso</th><th>Nombre Curso</th><th>Periodo</th><th>Nombre Profesor</th><th>Nota Final</th></tr>";
 
     foreach ($resultadoVista as $fila) {
-        echo "Estoy acá\n";
         echo "<tr>";
         echo "<td>" . htmlspecialchars($fila['numero_estudiante']) . "</td>";
         echo "<td>" . htmlspecialchars($fila['nombre_estudiante']) . "</td>";

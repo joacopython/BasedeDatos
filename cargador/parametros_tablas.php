@@ -1,12 +1,12 @@
 <?php
 
 $path_tablas = array(
-    'estudiantes' => '../data/Estudiantes_2.csv',
+    'estudiantes' => '../data/Estudiantes.csv',
     'planes' => '../data/Planes.csv',
     'docentes planificados' => '../data/docentes planificados.csv',
     'asignaturas' => '../data/Asignaturas.csv',
-    'notas' => '../data/Notas_2.csv',
-    'planeacion' => '../data/Planeación.csv',
+    'notas' => '../data/Notas.csv',
+    'planeacion' => '../data/planeación.csv',
     'prerrequisitos' => '../data/prerrequisitos.csv',
     'usuarios' => '../data/usuarios.csv',
 );
@@ -173,7 +173,7 @@ $tablas_intermedias = array(
         PRIMARY KEY (sigla_curso, seccion_curso, sede),
         FOREIGN KEY (sigla_curso) REFERENCES Curso(sigla_curso) ON DELETE CASCADE,
         FOREIGN KEY (nombre_facultad) REFERENCES Facultad(nombre_facultad) ON DELETE CASCADE,
-        FOREIGN KEY (run_profesor) REFERENCES Profesor(run) ON DELETE CASCADE,
+        FOREIGN KEY (run_profesor) REFERENCES Persona(run) ON DELETE CASCADE,
         FOREIGN KEY (sala) REFERENCES Salas(sala) ON DELETE CASCADE',
 
     'IncluyeCurso' =>
