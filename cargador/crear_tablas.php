@@ -9,11 +9,13 @@ function createEnumIfNotExists($db, $enumName, $enumValues) {
         $query = $db->prepare("SELECT 1 FROM pg_type WHERE typname = :enumName");
         $query->execute(['enumName' => $enumName]);
 
+        /*
         if ($query->fetch()) {
             // Si el tipo ya existe, eliminarlo
             $db->exec("DROP TYPE $enumName CASCADE;");
             echo "Tipo ENUM '$enumName' eliminado.\n";
         }
+        */
 
         // Crear el tipo ENUM
         $db->exec("CREATE TYPE $enumName AS ENUM ($enumValues);");
@@ -36,15 +38,15 @@ $db->commit();
 
 foreach($tablas_iniciales as $tabla => $atributos) {
     try {
-        echo "Eliminando tabla $tabla si existe...\n";
+        //echo "Eliminando tabla $tabla si existe...\n";
         $db->beginTransaction();
         
         // Elimina la tabla si existe
-        $dropTableQuery = "DROP TABLE IF EXISTS $tabla CASCADE;";
-        $db->exec($dropTableQuery);
+       // $dropTableQuery = "DROP TABLE IF EXISTS $tabla CASCADE;";
+        //$db->exec($dropTableQuery);
 
         // Crea la tabla
-        echo "Creando tabla $tabla...\n";
+        echo "Creando tabla $tabla si no existe...\n";
         $createTableQuery = "CREATE TABLE IF NOT EXISTS $tabla ($atributos);";
         $db->exec($createTableQuery);
 
@@ -58,15 +60,15 @@ foreach($tablas_iniciales as $tabla => $atributos) {
 
 foreach($tablas_intermedias as $tabla => $atributos) {
     try {
-        echo "Eliminando tabla $tabla si existe...\n";
+        //echo "Eliminando tabla $tabla si existe...\n";
         $db->beginTransaction();
         
         // Elimina la tabla si existe
-        $dropTableQuery = "DROP TABLE IF EXISTS $tabla CASCADE;";
-        $db->exec($dropTableQuery);
+       // $dropTableQuery = "DROP TABLE IF EXISTS $tabla CASCADE;";
+       // $db->exec($dropTableQuery);
 
         // Crea la tabla
-        echo "Creando tabla $tabla...\n";
+        echo "Creando tabla $tabla si no existe...\n";
         $createTableQuery = "CREATE TABLE IF NOT EXISTS $tabla ($atributos);";
         $db->exec($createTableQuery);
 
