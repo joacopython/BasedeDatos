@@ -581,6 +581,7 @@ function limpiar_docentes_planificados($data){
 
 
 function limpiar_notas($data){
+    $calificacion_enum = ['SO', 'MB', 'B', 'SU', 'I', 'M', 'MM', 'P', 'NP', 'EX', 'A', 'R', 'CV', 'SD', 'SC', 'ES', 'HO', 'DP'];
     // exequiel
     $tablas = [
         'Persona' => [],
@@ -721,11 +722,12 @@ function limpiar_notas($data){
         }
 
         elseif ($key === "Calificación"){  
-            if (!is_string($valor)){
+            if (!is_string($valor) || $valor){
                 //$datos_malos['HistorialAcademico']['calificacion'] = $valor;
                 $valor = NULL;
+            }elseif (!in_array($valor, $calificacion_enum)){
+                $tablas['HistorialAcademico']['calificacion'] = $valor;
             }
-            $tablas['HistorialAcademico']['calificacion'] = $valor;
         }
 
         elseif ($key === "Nota"){  
