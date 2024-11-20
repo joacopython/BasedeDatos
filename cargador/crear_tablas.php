@@ -25,7 +25,6 @@ function createEnumIfNotExists($db, $enumName, $enumValues) {
     }
 }
 
-// Crear todos los tipos ENUM
 $db->beginTransaction();
 createEnumIfNotExists($db, 'estamento_enum', "'Estudiante', 'Académico', 'Administrativo'");
 createEnumIfNotExists($db, 'jerarquia_academica_enum', "'Asistente', 'Asociado', 'Instructor', 'Titular', 'Sin Jerarquizar', 'Comisión Superior'");
@@ -38,14 +37,11 @@ $db->commit();
 
 foreach($tablas_iniciales as $tabla => $atributos) {
     try {
-        //echo "Eliminando tabla $tabla si existe...\n";
         $db->beginTransaction();
         
-        // Elimina la tabla si existe
         $dropTableQuery = "DROP TABLE IF EXISTS $tabla CASCADE;";
         $db->exec($dropTableQuery);
 
-        // Crea la tabla
         echo "Creando tabla $tabla si no existe...\n";
         $createTableQuery = "CREATE TABLE IF NOT EXISTS $tabla ($atributos);";
         $db->exec($createTableQuery);
@@ -56,7 +52,6 @@ foreach($tablas_iniciales as $tabla => $atributos) {
         echo "Error al procesar la tabla $tabla: " . $e->getMessage();
     }
 }
-// la idea seriaas iniciales primero luego las intermedias
 
 foreach($tablas_intermedias as $tabla => $atributos) {
     try {

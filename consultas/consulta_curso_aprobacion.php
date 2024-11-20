@@ -38,7 +38,7 @@
   ";
 
   $result = $db->prepare($query);
-  $result->bindParam(':codigo_curso', $codigo_curso);  // Vincular el parámetro
+  $result->bindParam(':codigo_curso', $codigo_curso); 
   $result->execute();
   $profesores = $result->fetchAll(PDO::FETCH_ASSOC);
 

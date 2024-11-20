@@ -137,28 +137,6 @@ try {
         exit("Corrija los errores y vuelva a intentar.\n");
     }
     $db->commit();
-    echo "Datos insertados correctamente en la tabla temporal.\n";
-/*
-    $crearVistaActaNotas = "
-    CREATE OR REPLACE VIEW ActaNotas AS
-    SELECT 
-        a.numero_estudiante,
-        per.nombres AS nombre_estudiante,
-        a.sigla_curso,
-        c.nombre_curso AS nombre_curso,
-        a.periodo,
-        profPersona.nombres AS nombre_profesor,
-        ROUND(a.nota, 2) AS nota_final -- Nota redondeada a 2 decimales
-    FROM 
-        acta a
-    JOIN Estudiante e ON a.numero_estudiante = e.numero_estudiante
-    JOIN Persona per ON e.run = per.run -- Relación Estudiante -> Persona para obtener el nombre del estudiante
-    JOIN OfertaAcademica oa ON a.sigla_curso = oa.sigla_curso -- Relación acta -> OfertaAcademica
-    JOIN Curso c ON oa.sigla_curso = c.sigla_curso -- Relación OfertaAcademica -> Curso
-    JOIN Profesor prof ON oa.run_profesor = prof.run -- Relación OfertaAcademica -> Profesor
-    JOIN Persona profPersona ON prof.run = profPersona.run; -- Relación Profesor -> Persona para obtener el nombre del profesor
-    ";
-    */
 
     $generar_acta_notas = "
     CREATE OR REPLACE FUNCTION generar_acta_notas()
@@ -177,8 +155,8 @@ try {
         a.sigla_curso,
         c.nombre_curso AS nombre_curso,
         a.periodo,
-        profPersona.nombre_completo AS nombre_profesor,
-        COALESCE(ROUND(a.nota, 2)::TEXT, 'P') AS nota_final
+        (profPersona.nombres || ' ' || profPersona.apellido_paterno || ' ' || COALESCE(profPersona.apellido_materno, '')) AS nombre_profesor,
+        COALESCE(ROUND(a.nota, 2)::TEXT, 'Pendiente') AS nota_final
     FROM 
         acta a
     JOIN Estudiante e ON a.numero_estudiante = e.numero_estudiante

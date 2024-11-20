@@ -9,24 +9,25 @@ try {
         RETURNS TRIGGER AS $$
         BEGIN
             IF NEW.nota BETWEEN 6.6 AND 7.0 THEN
-                NEW.calificacion := 'SO'; -- Sobresaliente
+                NEW.calificacion := 'SO';
             ELSIF NEW.nota BETWEEN 6.0 AND 6.5 THEN
-                NEW.calificacion := 'MB'; -- Muy Bueno
+                NEW.calificacion := 'MB';
             ELSIF NEW.nota BETWEEN 5.0 AND 5.9 THEN
-                NEW.calificacion := 'B';  -- Bueno
+                NEW.calificacion := 'B';
             ELSIF NEW.nota BETWEEN 4.0 AND 4.9 THEN
-                NEW.calificacion := 'SU'; -- Suficiente
+                NEW.calificacion := 'SU';
             ELSIF NEW.nota BETWEEN 3.0 AND 3.9 THEN
-                NEW.calificacion := 'I';  -- Insuficiente
+                NEW.calificacion := 'I';
             ELSIF NEW.nota BETWEEN 2.0 AND 2.9 THEN
-                NEW.calificacion := 'M';  -- Malo
+                NEW.calificacion := 'M';
             ELSIF NEW.nota BETWEEN 1.0 AND 1.9 THEN
-                NEW.calificacion := 'MM'; -- Muy Malo
+                NEW.calificacion := 'MM';
             END IF;
             RETURN NEW;
         END;
         $$ LANGUAGE plpgsql;
     ";
+    
     $db->exec($crearFuncionTrigger);
     echo "Función del trigger creada exitosamente.\n";
 
