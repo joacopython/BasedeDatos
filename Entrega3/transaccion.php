@@ -28,7 +28,6 @@ try {
         );
     ");
 
-
     $stmt = $db->prepare("
         INSERT INTO acta (numero_estudiante, sigla_curso, periodo, seccion, calificacion, nota)
         VALUES (:numero_estudiante, :sigla_curso, :periodo, :seccion, :calificacion, :nota)
@@ -41,7 +40,35 @@ try {
         $periodo = $row[4];
         $nota_dic = $row[5];
         $nota_mar = $row[6];
+        if ($numero_estudiante == ''){
+            continue;
+        }
+
+        $checkStudent = $db->prepare("SELECT 1 FROM Estudiante WHERE numero_estudiante = :numero_estudiante");
+        $checkStudent->execute([':numero_estudiante' => $numero_estudiante]);
+        if ($checkStudent->rowCount() === 0) {
+            $errores[] = "El estudiante con número $numero_estudiante no existe.";
+            continue;
+        }
         
+
+        $checkCurso = $db->prepare("SELECT 1 FROM Curso WHERE sigla_curso = :sigla_curso");
+        $checkCurso->execute([':sigla_curso' => $asignatura]);
+        if ($checkCurso->rowCount() === 0) {
+            $errores[] = "El curso con sigla $asignatura no existe.";
+            continue;
+        }
+    
+        $checkProfesor = $db->prepare("SELECT 1 FROM Profesor p
+            JOIN OfertaAcademica oa ON p.run = oa.run_profesor
+            WHERE oa.sigla_curso = :sigla_curso");
+        $checkProfesor->execute([':sigla_curso' => $asignatura]);
+        if ($checkProfesor->rowCount() === 0) {
+            $errores[] = "El profesor asociado al curso $asignatura no existe.";
+            continue;
+        }
+
+
         $calificacion;
         if($nota_dic == "P"){
           $nota = NULL;
@@ -111,7 +138,7 @@ try {
     }
     $db->commit();
     echo "Datos insertados correctamente en la tabla temporal.\n";
-
+/*
     $crearVistaActaNotas = "
     CREATE OR REPLACE VIEW ActaNotas AS
     SELECT 
@@ -131,11 +158,47 @@ try {
     JOIN Profesor prof ON oa.run_profesor = prof.run -- Relación OfertaAcademica -> Profesor
     JOIN Persona profPersona ON prof.run = profPersona.run; -- Relación Profesor -> Persona para obtener el nombre del profesor
     ";
-    
-    $db->exec($crearVistaActaNotas);
-    
+    */
 
-    echo "Vista 'ActaNotas' creada exitosamente.\n";
+    $generar_acta_notas = "
+    CREATE OR REPLACE FUNCTION generar_acta_notas()
+    RETURNS void AS $$
+    BEGIN
+    -- Validar notas en el rango correcto
+    UPDATE acta
+    SET nota = NULL
+    WHERE nota < 1 OR nota > 7;
+
+    -- Crear la vista del acta de notas
+    CREATE OR REPLACE VIEW ActaNotas AS
+    SELECT 
+        a.numero_estudiante,
+        per.nombres AS nombre_estudiante,
+        a.sigla_curso,
+        c.nombre_curso AS nombre_curso,
+        a.periodo,
+        profPersona.nombre_completo AS nombre_profesor,
+        COALESCE(ROUND(a.nota, 2)::TEXT, 'P') AS nota_final
+    FROM 
+        acta a
+    JOIN Estudiante e ON a.numero_estudiante = e.numero_estudiante
+    JOIN Persona per ON e.run = per.run
+    JOIN OfertaAcademica oa ON a.sigla_curso = oa.sigla_curso
+    JOIN Curso c ON oa.sigla_curso = c.sigla_curso
+    JOIN Profesor prof ON oa.run_profesor = prof.run
+    JOIN Persona profPersona ON prof.run = profPersona.run
+    WHERE EXISTS (
+        SELECT 1 
+        FROM Estudiante 
+        WHERE Estudiante.numero_estudiante = a.numero_estudiante
+    );
+
+    RAISE NOTICE 'Vista ActaNotas creada correctamente.';
+    END;
+    $$ LANGUAGE plpgsql;";
+
+    $db->exec($generar_acta_notas);
+    $db->exec("SELECT generar_acta_notas()");
 
     // Consultar y mostrar la vista
     $consultaVista = "SELECT * FROM ActaNotas;";
@@ -156,7 +219,6 @@ try {
         echo "<td>" . htmlspecialchars($fila['nota_final']) . "</td>";
         echo "</tr>";
     }
-    echo "Termine acá\n";
     echo "</table>";
 
 }catch (Exception $e) {

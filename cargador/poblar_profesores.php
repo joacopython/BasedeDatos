@@ -44,7 +44,7 @@ try {
         $db->exec($insert_query);
     }
 
-    echo "La tabla Profesores ha sido transferida exitosamente.";
+    echo "La tabla Profesores ha sido transferida exitosamente.\n";
 } catch (PDOException $e) {
     $db->exec("DROP TABLE Profesor;");
     die("Error durante el proceso: " . $e->getMessage());
@@ -53,18 +53,24 @@ try {
 
 try {
     $transfer_query = "
-        INSERT INTO Persona (run, nombres, apellido_paterno, apellido_materno, email_institucional)
-        SELECT 
-            run, 
-            nombre AS nombres, 
-            apellido1 AS apellido_paterno, 
-            apellido2 AS apellido_materno, 
-            email_institucional
-        FROM Profesor;
+    INSERT INTO Persona (run, nombres, apellido_paterno, apellido_materno, email_institucional)
+    SELECT 
+        run, 
+        nombre AS nombres, 
+        apellido1 AS apellido_paterno, 
+        apellido2 AS apellido_materno, 
+        email_institucional
+    FROM Profesor
+    ON CONFLICT (run) DO UPDATE
+    SET 
+        nombres = EXCLUDED.nombres,
+        apellido_paterno = EXCLUDED.apellido_paterno,
+        apellido_materno = EXCLUDED.apellido_materno,
+        email_institucional = EXCLUDED.email_institucional;
     ";
 
     $db->exec($transfer_query);
-    echo "Los datos han sido transferidos exitosamente de Profesor a Persona.";
+    echo "Los datos han sido transferidos exitosamente de Profesor a Persona.\n";
 } catch (PDOException $e) {
     die("Error durante la transferencia: " . $e->getMessage());
 }

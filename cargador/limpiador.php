@@ -1,5 +1,23 @@
 <?php
+function corregir_email($email, $categoria) {
+    $email = (string)$email;
+    $email = preg_replace('/\s+/', '', $email);
+    $email = preg_replace('/[^A-Za-z0-9@.áéíóúÁÉÍÓÚüÜñÑ]/u', '', $email);
+    if ($categoria == 'personal'){
+        //mail personal
+        // estoy asumiendo que todos deben ser @gmail.com
+        $email = preg_replace('/@.*/', '@gmail.com', $email);
+        return $email;
+        }
+    elseif ($categoria == 'institucional'){
+        //mail institucional
+        $email = preg_replace('/@.*/', '@lamejor.cl', $email);
+        return $email;
+    }
+    }
+?>
 
+<?php
 //preg_match($formato_intitucional, $email_institucional)
 
 function remove_bom($string) {
@@ -489,7 +507,10 @@ function limpiar_docentes_planificados($data){
                 //$datos_malos['EmailPersonal']['email_personal'] = $valor;
                 $valor = null;
             }
+            $categoria = 'personal';
+            $valor = corregir_email($valor, $categoria);
             $tablas['EmailPersonal']['email_personal'] = $valor;
+
         }elseif ($key === 'email  institucional'){
             $formato_institucional = '/^.+@lamejor\.cl$/';
             if (!is_string($valor) || !preg_match($formato_institucional, $valor)){
@@ -615,7 +636,7 @@ function limpiar_notas($data){
         elseif ($key === "Plan"){
             if (!is_string($valor) || empty($valor)) {
                 //$datos_malos['PlanEstudio']['nombre_plan'] = $valor;
-                $valor = NULL;
+                $valor = 'NULL';
             }
             $tablas['PlanEstudio']['nombre_plan'] = $valor;
         }
@@ -937,6 +958,7 @@ function limpiar_planeacion($data){
                 $valor = (int)$valor;
                 $tablas['Persona']['run'] = $valor;
                 $tablas['Profesor']['run'] = $valor;
+                $tablas['OfertaAcademica']['run_profesor'] = $valor;
                 $tablas['EmailPersonal']['run'] = $valor;
                 $tablas['Telefono']['run'] = $valor;
                 $tablas['Administrativo']['run'] = $valor;
